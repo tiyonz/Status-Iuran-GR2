@@ -3,65 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transparansi Iuran Warga - Gaharu Residence 2</title>
+    <title>Dashboard Iuran Warga - Gaharu Residence 2</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --bg: #f8f9fa;
-            --text: #333;
+            --bg-main: #f1f5f9;
+            --card-bg: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: var(--bg); color: var(--text); }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h2 { color: var(--primary); text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 25px; }
-        
-        /* Tombol Filter */
-        .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .btn-filter { 
-            background-color: #fff; color: var(--primary); border: 1px solid #cbd5e1; 
-            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s ease;
-        }
-        .btn-filter:hover { background-color: #f1f5f9; border-color: var(--accent); }
-        .btn-filter.active { background-color: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 2px 4px rgba(52,152,219,0.3); }
 
-        /* Tabel Responsif */
-        .table-responsive { width: 100%; overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; white-space: nowrap; }
-        th, td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; }
-        th { background-color: var(--primary); color: white; font-weight: 600; position: sticky; top: 0; }
-        tr:hover { background-color: #f8fafc; }
-        
-        .loading { text-align: center; font-style: italic; color: #777; padding: 40px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 20px 10px;
+        }
+
+        .dashboard-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header-card h1 {
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .header-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-filter {
+            background-color: #f8fafc;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-filter:hover {
+            background-color: #f1f5f9;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-filter.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Table Card Container */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Status Styling (Jika ada teks LUNAS / MENUNGGAK) */
+        td:contains('LUNAS') { color: #16a34a; font-weight: bold; }
+
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .error-state { color: #dc2626; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>📊 Status Iuran Warga Gaharu Residence 2</h2>
-        <p class="subtitle">Pilih blok di bawah ini untuk melihat data pembayaran iuran.</p>
+    <div class="dashboard-container">
         
-        <!-- Tombol Filter Blok -->
-        <div class="filter-container" id="filter-buttons">
-            <button class="btn-filter active" onclick="filterBlok('SEMUA', this)">Semua Blok</button>
-            <button class="btn-filter" onclick="filterBlok('Blok A', this)">Blok A</button>
-            <button class="btn-filter" onclick="filterBlok('Blok B', this)">Blok BB</button>
-            <button class="btn-filter" onclick="filterBlok('Blok C', this)">Blok C</button>
-            <button class="btn-filter" onclick="filterBlok('Blok D', this)">Blok D</button>
-            <button class="btn-filter" onclick="filterBlok('Blok E', this)">Blok E</button>
-            <button class="btn-filter" onclick="filterBlok('Blok FGH', this)">Blok FGH</button>
+        <!-- Header Informasi -->
+        <div class="header-card">
+            <h1>📊 Transparansi Iuran Warga</h1>
+            <p>Forum Warga Gaharu Residence 2 — Pilih blok di bawah untuk melihat rincian.</p>
         </div>
 
-        <div class="table-responsive">
-            <div id="tabel-container" class="loading">Memuat data dari Google Sheets...</div>
+        <!-- Tombol Filter per Blok -->
+        <div class="filter-section" id="filter-buttons">
+            <button class="btn-filter active" onclick="filterBlok('SEMUA', this)">Semua Blok</button>
+            <button class="btn-filter" onclick="filterBlok('A', this)">Blok A</button>
+            <button class="btn-filter" onclick="filterBlok('B', this)">Blok B</button>
+            <button class="btn-filter" onclick="filterBlok('C', this)">Blok C</button>
+            <button class="btn-filter" onclick="filterBlok('D', this)">Blok D</button>
+            <button class="btn-filter" onclick="filterBlok('E', this)">Blok E</button>
+            <button class="btn-filter" onclick="filterBlok('FGH', this)">Blok FGH</button>
         </div>
+
+        <!-- Konten Tabel -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <div id="tabel-container" class="loading-state">Memuat data dari Google Sheets...</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- MASUKKAN LINK CSV GOOGLE SHEETS ANDA DI SINI ---
-        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=1322752736&single=true&output=csv
-                        ';
+        // --- GANTI LINK DI BAWAH INI DENGAN LINK CSV GOOGLE SHEETS ANDA ---
+        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv';
         let barisData = [];
 
         fetch(urlCSV)
@@ -71,7 +184,8 @@
                 tampilkanTabel('SEMUA');
             })
             .catch(error => {
-                document.getElementById('tabel-container').innerHTML = 'Gagal memuat data. Periksa kembali link CSV.';
+                document.getElementById('tabel-container').className = 'error-state';
+                document.getElementById('tabel-container').innerHTML = 'Gagal memuat data. Periksa kembali link CSV publik Anda.';
                 console.error(error);
             });
 
@@ -80,15 +194,14 @@
             let headerDibuat = false;
 
             barisData.forEach((row, index) => {
-                // Memisahkan kolom CSV (mengatasi tanda koma standar)
                 const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
 
-                // Lewati baris judul atas jika itu judul utama sheet (bukan header tabel)
+                // Lewati baris judul utama sheet yang tidak penting
                 if (index === 0 && (cols[0].includes('BLOK') || cols.length < 5)) {
                     return; 
                 }
 
-                // Ambil baris Header Utama (Kolom: Blok, No Rumah, Penghuni, dst)
+                // Ambil header tabel utama
                 if (!headerDibuat) {
                     html += '<thead><tr>';
                     cols.forEach(c => html += `<th>${c}</th>`);
@@ -97,23 +210,27 @@
                     return;
                 }
 
-                // Cek pencocokan filter berdasarkan awalan No Rumah atau kolom Blok (misal: "BB-01" masuk ke Blok BB)
-                let noRumahAtauBlok = cols[0] ? cols[0].toUpperCase() : '';
+                let kolomBlok = cols[0] ? cols[0].toUpperCase() : '';
                 let cocok = false;
 
                 if (pilihanBlok === 'SEMUA') {
                     cocok = true;
                 } else {
-                    let kodeTarget = pilihanBlok.replace('Blok ', '').toUpperCase(); // Contoh: "BB" atau "A"
-                    // Cek jika nomor rumah diawali kode blok tersebut (misal: "BB-01" diawali "BB")
-                    if (noRumahAtauBlok.startsWith(kodeTarget + '-') || noRumahAtauBlok.startsWith(kodeTarget)) {
+                    if (kolomBlok === pilihanBlok.toUpperCase()) {
                         cocok = true;
                     }
                 }
 
                 if (cocok) {
                     html += '<tr>';
-                    cols.forEach(c => html += `<td>${c}</td>`);
+                    cols.forEach(c => {
+                        let styleClass = '';
+                        if (c.includes('LUNAS')) styleClass = 'color: #16a34a; font-weight: bold;';
+                        if (c.includes('MENUNGGAK')) styleClass = 'color: #dc2626; font-weight: bold;';
+                        if (c.includes('KOSONG')) styleClass = 'color: #94a3b8; font-style: italic;';
+                        
+                        html += `<td style="${styleClass}">${c}</td>`;
+                    });
                     html += '</tr>';
                 }
             });
