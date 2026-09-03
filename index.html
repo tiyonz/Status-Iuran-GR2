@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Iuran Warga</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; color: #333; }
+        h2 { color: #2c3e50; text-align: center; }
+        p { text-align: center; color: #555; }
+        
+        /* Tombol Filter Blok */
+        .filter-container { text-align: center; margin: 20px 0; }
+        .btn-filter { 
+            background-color: #3498db; color: white; border: none; 
+            padding: 10px 18px; margin: 5px; border-radius: 5px; 
+            cursor: pointer; font-size: 14px; font-weight: bold; 
+            transition: 0.2s;
+        }
+        .btn-filter:hover, .btn-filter.active { background-color: #2980b9; transform: scale(1.05); }
+
+        /* Tabel */
+        table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 5px; overflow-x: auto; display: block; }
+        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; white-space: nowrap; }
+        th { background-color: #2c3e50; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        .loading { text-align: center; font-style: italic; color: #777; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>📊 Status Pembayaran Iuran Warga</h2>
+    <p>Silakan pilih blok rumah Anda di bawah ini untuk melihat status iuran:</p>
+    
+    <!-- Tombol Filter Blok -->
+    <div class="filter-container" id="filter-buttons">
+        <button class="btn-filter active" onclick="filterBlok('SEMUA')">Semua Blok</button>
+        <button class="btn-filter" onclick="filterBlok('Blok A')">Blok A</button>
+        <button class="btn-filter" onclick="filterBlok('Blok B')">Blok B</button>
+        <button class="btn-filter" onclick="filterBlok('Blok C')">Blok C</button>
+        <button class="btn-filter" onclick="filterBlok('Blok D')">Blok D</button>
+        <button class="btn-filter" onclick="filterBlok('Blok E')">Blok E</button>
+        <button class="btn-filter" onclick="filterBlok('Blok FGH')">Blok FGH</button>
+    </div>
+
+    <div id="tabel-container" class="loading">Memuat data dari Google Sheets...</div>
+
+    <script>
+        // --- Ganti link di bawah ini dengan Link CSV "Publish to Web" dari Google Sheets Anda ---
+        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=1322752736&single=true&output=csv';
+        let dataMentah = [];
+
+        fetch(urlCSV)
+            .then(response => response.text())
+            .then(data => {
+                dataMentah = data.split('\n');
+                tampilkanBlokDipilih('SEMUA');
+            })
+            .catch(error => {
+                document.getElementById('tabel-container').innerHTML = 'Gagal memuat data. Periksa kembali link CSV.';
+                console.error(error);
+            });
+
+        function tampilkanBlokDipilih(blokPilihan) {
+            let html = '<table>';
+            let headerDitampilkan = false;
+
+            dataMentah.forEach((row, index) => {
+                if (row.trim() === '') return;
+                const cols = row.split(',').map(col => col.replace(/^"|"$/g, '').trim());
+
+                if (index === 0) {
+                    html += '<tr>';
+                    cols.forEach(col => html += `<th>${col}</th>`);
+                    html += '</tr>';
+                    headerDitampilkan = true;
+                    return;
+                }
+
+                let cocokBlok = false;
+                if (blokPilihan === 'SEMUA') {
+                    cocokBlok = true;
+                } else {
+                    cocokBlok = cols.some(cell => cell.toLowerCase() === blokPilihan.toLowerCase());
+                }
+
+                if (cocokBlok && headerDitampilkan) {
+                    html += '<tr>';
+                    cols.forEach(col => {
+                        html += `<td>${col}</td>`;
+                    });
+                    html += '</tr>';
+                }
+            });
+
+            html += '</table>';
+            document.getElementById('tabel-container').innerHTML = html;
+        }
+
+        function filterBlok(blok) {
+            let buttons = document.querySelectorAll('.btn-filter');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            tampilkanBlokDipilih(blok);
+        }
+    </script>
+
+</body>
+</html>
