@@ -6,7 +6,7 @@
     <title>Dashboard Iuran Warga - Gaharu Residence 2</title>
     <style>
         :root {
-            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.9);
             --primary: #0f172a;
             --accent: #3b82f6;
             --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
@@ -45,7 +45,7 @@
             padding: 16px 24px;
             border-radius: var(--radius);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -73,7 +73,6 @@
             font-size: 13px;
             font-weight: 700;
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            letter-spacing: 0.03em;
         }
 
         /* Filter Section */
@@ -100,7 +99,7 @@
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
         }
 
         .btn-filter:hover {
@@ -117,7 +116,7 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
         }
 
-        /* Table Card Container - Locked to Screen */
+        /* Table Card Container */
         .table-card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -157,27 +156,16 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            letter-spacing: 0.01em;
-        }
-
-        tbody tr {
-            transition: background-color 0.15s ease;
         }
 
         tbody tr:hover {
             background-color: rgba(59, 130, 246, 0.03);
         }
 
-        /* Status Colors & Alignment */
-        .status-icon {
-            display: inline-block;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .check { color: #10b981; font-size: 15px; } /* Hijau */
-        .cross { color: #ef4444; font-size: 15px; } /* Merah */
-        .dash  { color: #94a3b8; font-size: 15px; } /* Abu */
+        /* Status Colors */
+        .check { color: #10b981; font-weight: bold; font-size: 15px; } /* Hijau */
+        .cross { color: #ef4444; font-weight: bold; font-size: 15px; } /* Merah */
+        .dash  { color: #94a3b8; font-weight: bold; font-size: 15px; } /* Abu */
 
         .loading-state, .error-state {
             display: flex;
@@ -216,7 +204,7 @@
             <button class="btn-filter" onclick="filterBlok('FGH', this)">Blok FGH</button>
         </div>
 
-        <!-- Konten Tabel Terkunci 1 Layar -->
+        <!-- Konten Tabel -->
         <div class="table-card">
             <div class="table-responsive">
                 <div id="tabel-container" class="loading-state">Memuat data dari Google Sheets...</div>
@@ -243,24 +231,41 @@
                 console.error(error);
             });
 
+        function parseCSVLine(text) {
+            let result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim().replace(/^"|"$/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim().replace(/^"|"$/g, ''));
+            return result;
+        }
+
         function tampilkanTabel(pilihanBlok) {
             let html = '<table>';
             let headerDibuat = false;
             let targetColsIndex = [];
 
             barisData.forEach((row, index) => {
-                const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
+                const cols = parseCSVLine(row);
 
-                if (index === 0 && (cols[0].includes('BLOK') || cols.length < 5)) {
+                if (index === 0 && (cols[0].toUpperCase().includes('BLOK') || cols.length < 5)) {
                     return; 
                 }
 
-                // Header Processing & Kolom Cleanup (Buang kolom "Status" / Tunggakan / Jumlah jika ada)
                 if (!headerDibuat) {
                     html += '<thead><tr>';
                     cols.forEach((c, idx) => {
                         let headerName = c.toUpperCase();
-                        // Filter out unwanted columns like 'STATUS' or 'JUMLAH' if they exist in CSV
                         if (!headerName.includes('TUNGGAKAN') && !headerName.includes('JUMLAH') && headerName !== 'STATUS') {
                             targetColsIndex.push(idx);
                             html += `<th>${c}</th>`;
@@ -288,18 +293,17 @@
                         let val = cols[idx] !== undefined ? cols[idx] : '';
                         let cellContent = val;
 
-                        // Styling khusus simbol checklist, silang, dan strip
                         if (val === '✔' || val.toLowerCase() === 'v') {
-                            cellContent = `<span class="status-icon check">✔</span>`;
+                            cellContent = `<span class="check">✔</span>`;
                         } else if (val === '✖' || val === 'X' || val.toLowerCase() === 'x') {
-                            cellContent = `<span class="status-icon cross">✖</span>`;
+                            cellContent = `<span class="cross">✖</span>`;
                         } else if (val === '-' || val === '—') {
-                            cellContent = `<span class="status-icon dash">—</span>`;
-                        } else if (val.includes('LUNAS')) {
+                            cellContent = `<span class="dash">—</span>`;
+                        } else if (val.toUpperCase().includes('LUNAS')) {
                             cellContent = `<span style="color: #10b981; font-weight: 700;">${val}</span>`;
-                        } else if (val.includes('MENUNGGAK')) {
+                        } else if (val.toUpperCase().includes('MENUNGGAK')) {
                             cellContent = `<span style="color: #ef4444; font-weight: 700;">${val}</span>`;
-                        } else if (val.includes('KOSONG')) {
+                        } else if (val.toUpperCase().includes('KOSONG')) {
                             cellContent = `<span style="color: #94a3b8; font-style: italic;">${val}</span>`;
                         }
 
