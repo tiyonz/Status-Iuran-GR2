@@ -6,114 +6,148 @@
     <title>Dashboard Iuran Warga - Gaharu Residence 2</title>
     <style>
         :root {
-            --bg-main: #f1f5f9;
-            --card-bg: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.85);
             --primary: #0f172a;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --text-main: #334155;
+            --accent: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --text-main: #1e293b;
             --text-muted: #64748b;
-            --border: #e2e8f0;
+            --border: #f1f5f9;
+            --radius: 16px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
+        html, body {
+            height: 100vh;
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-main);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             color: var(--text-main);
-            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .dashboard-container {
-            max-width: 1280px;
-            margin: 0 auto;
+            width: 96vw;
+            height: 94vh;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        /* Header Card */
+        /* Modern Glass Header */
         .header-card {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            text-align: center;
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
         }
 
-        .header-card h1 {
-            font-size: 22px;
+        .header-title h1 {
+            font-size: 20px;
             color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 6px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 2px;
         }
 
-        .header-card p {
-            font-size: 14px;
+        .header-title p {
+            font-size: 13px;
             color: var(--text-muted);
+        }
+
+        .badge-periode {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            letter-spacing: 0.03em;
         }
 
         /* Filter Section */
         .filter-section {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
+            align-items: center;
         }
 
         .btn-filter {
-            background-color: #f8fafc;
+            background-color: rgba(255, 255, 255, 0.7);
             color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-filter:hover {
-            background-color: #f1f5f9;
+            background-color: #ffffff;
             border-color: var(--accent);
             color: var(--accent);
+            transform: translateY(-1px);
         }
 
         .btn-filter.active {
-            background-color: var(--accent);
+            background: var(--accent-gradient);
             color: white;
-            border-color: var(--accent);
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
         }
 
-        /* Table Card Container */
+        /* Table Card Container - Locked to Screen */
         .table-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .table-responsive {
             width: 100%;
-            overflow-x: auto;
+            height: 100%;
+            overflow: auto;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             text-align: left;
-            font-size: 14px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
         th, td {
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         th {
@@ -123,33 +157,52 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            letter-spacing: 0.01em;
+        }
+
+        tbody tr {
+            transition: background-color 0.15s ease;
         }
 
         tbody tr:hover {
-            background-color: #f8fafc;
+            background-color: rgba(59, 130, 246, 0.03);
         }
 
-        /* Status Styling (Jika ada teks LUNAS / MENUNGGAK) */
-        td:contains('LUNAS') { color: #16a34a; font-weight: bold; }
+        /* Status Colors & Alignment */
+        .status-icon {
+            display: inline-block;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .check { color: #10b981; font-size: 15px; } /* Hijau */
+        .cross { color: #ef4444; font-size: 15px; } /* Merah */
+        .dash  { color: #94a3b8; font-size: 15px; } /* Abu */
 
         .loading-state, .error-state {
-            text-align: center;
-            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
             color: var(--text-muted);
             font-style: italic;
+            font-size: 14px;
         }
 
-        .error-state { color: #dc2626; }
+        .error-state { color: #ef4444; }
     </style>
 </head>
 <body>
 
     <div class="dashboard-container">
         
-        <!-- Header Informasi -->
+        <!-- Header Informasi + Periode -->
         <div class="header-card">
-            <h1>📊 Transparansi Iuran Warga</h1>
-            <p>Forum Warga Gaharu Residence 2 — Pilih blok di bawah untuk melihat rincian.</p>
+            <div class="header-title">
+                <h1>📊 Transparansi Iuran Warga</h1>
+                <p>Forum Warga Gaharu Residence 2</p>
+            </div>
+            <div class="badge-periode">Periode Tahun 2026</div>
         </div>
 
         <!-- Tombol Filter per Blok -->
@@ -163,7 +216,7 @@
             <button class="btn-filter" onclick="filterBlok('FGH', this)">Blok FGH</button>
         </div>
 
-        <!-- Konten Tabel -->
+        <!-- Konten Tabel Terkunci 1 Layar -->
         <div class="table-card">
             <div class="table-responsive">
                 <div id="tabel-container" class="loading-state">Memuat data dari Google Sheets...</div>
@@ -173,8 +226,9 @@
     </div>
 
     <script>
-        // --- GANTI LINK DI BAWAH INI DENGAN LINK CSV GOOGLE SHEETS ANDA ---
-        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv';
+        // --- MASUKKAN LINK CSV GOOGLE SHEETS ANDA DI SINI ---
+        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv
+';
         let barisData = [];
 
         fetch(urlCSV)
@@ -192,19 +246,26 @@
         function tampilkanTabel(pilihanBlok) {
             let html = '<table>';
             let headerDibuat = false;
+            let targetColsIndex = [];
 
             barisData.forEach((row, index) => {
                 const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
 
-                // Lewati baris judul utama sheet yang tidak penting
                 if (index === 0 && (cols[0].includes('BLOK') || cols.length < 5)) {
                     return; 
                 }
 
-                // Ambil header tabel utama
+                // Header Processing & Kolom Cleanup (Buang kolom "Status" / Tunggakan / Jumlah jika ada)
                 if (!headerDibuat) {
                     html += '<thead><tr>';
-                    cols.forEach(c => html += `<th>${c}</th>`);
+                    cols.forEach((c, idx) => {
+                        let headerName = c.toUpperCase();
+                        // Filter out unwanted columns like 'STATUS' or 'JUMLAH' if they exist in CSV
+                        if (!headerName.includes('TUNGGAKAN') && !headerName.includes('JUMLAH') && headerName !== 'STATUS') {
+                            targetColsIndex.push(idx);
+                            html += `<th>${c}</th>`;
+                        }
+                    });
                     html += '</tr></thead><tbody>';
                     headerDibuat = true;
                     return;
@@ -223,13 +284,26 @@
 
                 if (cocok) {
                     html += '<tr>';
-                    cols.forEach(c => {
-                        let styleClass = '';
-                        if (c.includes('LUNAS')) styleClass = 'color: #16a34a; font-weight: bold;';
-                        if (c.includes('MENUNGGAK')) styleClass = 'color: #dc2626; font-weight: bold;';
-                        if (c.includes('KOSONG')) styleClass = 'color: #94a3b8; font-style: italic;';
-                        
-                        html += `<td style="${styleClass}">${c}</td>`;
+                    targetColsIndex.forEach(idx => {
+                        let val = cols[idx] !== undefined ? cols[idx] : '';
+                        let cellContent = val;
+
+                        // Styling khusus simbol checklist, silang, dan strip
+                        if (val === '✔' || val.toLowerCase() === 'v') {
+                            cellContent = `<span class="status-icon check">✔</span>`;
+                        } else if (val === '✖' || val === 'X' || val.toLowerCase() === 'x') {
+                            cellContent = `<span class="status-icon cross">✖</span>`;
+                        } else if (val === '-' || val === '—') {
+                            cellContent = `<span class="status-icon dash">—</span>`;
+                        } else if (val.includes('LUNAS')) {
+                            cellContent = `<span style="color: #10b981; font-weight: 700;">${val}</span>`;
+                        } else if (val.includes('MENUNGGAK')) {
+                            cellContent = `<span style="color: #ef4444; font-weight: 700;">${val}</span>`;
+                        } else if (val.includes('KOSONG')) {
+                            cellContent = `<span style="color: #94a3b8; font-style: italic;">${val}</span>`;
+                        }
+
+                        html += `<td>${cellContent}</td>`;
                     });
                     html += '</tr>';
                 }
