@@ -3,106 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cek Status Iuran Warga</title>
+    <title>Transparansi Iuran Warga - Gaharu Residence 2</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; color: #333; }
-        h2 { color: #2c3e50; text-align: center; }
-        p { text-align: center; color: #555; }
-        
-        /* Tombol Filter Blok */
-        .filter-container { text-align: center; margin: 20px 0; }
-        .btn-filter { 
-            background-color: #3498db; color: white; border: none; 
-            padding: 10px 18px; margin: 5px; border-radius: 5px; 
-            cursor: pointer; font-size: 14px; font-weight: bold; 
-            transition: 0.2s;
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f8f9fa;
+            --text: #333;
         }
-        .btn-filter:hover, .btn-filter.active { background-color: #2980b9; transform: scale(1.05); }
-
-        /* Tabel */
-        table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 5px; overflow-x: auto; display: block; }
-        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; white-space: nowrap; }
-        th { background-color: #2c3e50; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 15px; background-color: var(--bg); color: var(--text); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h2 { color: var(--primary); text-align: center; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 25px; }
         
-        .loading { text-align: center; font-style: italic; color: #777; margin-top: 20px; }
+        /* Tombol Filter */
+        .filter-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .btn-filter { 
+            background-color: #fff; color: var(--primary); border: 1px solid #cbd5e1; 
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s ease;
+        }
+        .btn-filter:hover { background-color: #f1f5f9; border-color: var(--accent); }
+        .btn-filter.active { background-color: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 2px 4px rgba(52,152,219,0.3); }
+
+        /* Tabel Responsif */
+        .table-responsive { width: 100%; overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; white-space: nowrap; }
+        th, td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: var(--primary); color: white; font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background-color: #f8fafc; }
+        
+        .loading { text-align: center; font-style: italic; color: #777; padding: 40px; }
     </style>
 </head>
 <body>
 
-    <h2>📊 Status Pembayaran Iuran Warga</h2>
-    <p>Silakan pilih blok rumah Anda di bawah ini untuk melihat status iuran:</p>
-    
-    <!-- Tombol Filter Blok -->
-    <div class="filter-container" id="filter-buttons">
-        <button class="btn-filter active" onclick="filterBlok('SEMUA')">Semua Blok</button>
-        <button class="btn-filter" onclick="filterBlok('Blok A')">Blok A</button>
-        <button class="btn-filter" onclick="filterBlok('Blok B')">Blok B</button>
-        <button class="btn-filter" onclick="filterBlok('Blok C')">Blok C</button>
-        <button class="btn-filter" onclick="filterBlok('Blok D')">Blok D</button>
-        <button class="btn-filter" onclick="filterBlok('Blok E')">Blok E</button>
-        <button class="btn-filter" onclick="filterBlok('Blok FGH')">Blok FGH</button>
+    <div class="container">
+        <h2>📊 Status Iuran Warga Gaharu Residence 2</h2>
+        <p class="subtitle">Pilih blok di bawah ini untuk melihat data pembayaran iuran.</p>
+        
+        <!-- Tombol Filter Blok -->
+        <div class="filter-container" id="filter-buttons">
+            <button class="btn-filter active" onclick="filterBlok('SEMUA', this)">Semua Blok</button>
+            <button class="btn-filter" onclick="filterBlok('Blok A', this)">Blok A</button>
+            <button class="btn-filter" onclick="filterBlok('Blok B', this)">Blok BB</button>
+            <button class="btn-filter" onclick="filterBlok('Blok C', this)">Blok C</button>
+            <button class="btn-filter" onclick="filterBlok('Blok D', this)">Blok D</button>
+            <button class="btn-filter" onclick="filterBlok('Blok E', this)">Blok E</button>
+            <button class="btn-filter" onclick="filterBlok('Blok FGH', this)">Blok FGH</button>
+        </div>
+
+        <div class="table-responsive">
+            <div id="tabel-container" class="loading">Memuat data dari Google Sheets...</div>
+        </div>
     </div>
 
-    <div id="tabel-container" class="loading">Memuat data dari Google Sheets...</div>
-
     <script>
-        // --- Ganti link di bawah ini dengan Link CSV "Publish to Web" dari Google Sheets Anda ---
-        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=1322752736&single=true&output=csv';
-        let dataMentah = [];
+        // --- MASUKKAN LINK CSV GOOGLE SHEETS ANDA DI SINI ---
+        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=1322752736&single=true&output=csv
+                        ';
+        let barisData = [];
 
         fetch(urlCSV)
             .then(response => response.text())
-            .then(data => {
-                dataMentah = data.split('\n');
-                tampilkanBlokDipilih('SEMUA');
+            .then(text => {
+                barisData = text.split('\n').filter(r => r.trim() !== '');
+                tampilkanTabel('SEMUA');
             })
             .catch(error => {
                 document.getElementById('tabel-container').innerHTML = 'Gagal memuat data. Periksa kembali link CSV.';
                 console.error(error);
             });
 
-        function tampilkanBlokDipilih(blokPilihan) {
+        function tampilkanTabel(pilihanBlok) {
             let html = '<table>';
-            let headerDitampilkan = false;
+            let headerDibuat = false;
 
-            dataMentah.forEach((row, index) => {
-                if (row.trim() === '') return;
-                const cols = row.split(',').map(col => col.replace(/^"|"$/g, '').trim());
+            barisData.forEach((row, index) => {
+                // Memisahkan kolom CSV (mengatasi tanda koma standar)
+                const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
 
-                if (index === 0) {
-                    html += '<tr>';
-                    cols.forEach(col => html += `<th>${col}</th>`);
-                    html += '</tr>';
-                    headerDitampilkan = true;
+                // Lewati baris judul atas jika itu judul utama sheet (bukan header tabel)
+                if (index === 0 && (cols[0].includes('BLOK') || cols.length < 5)) {
+                    return; 
+                }
+
+                // Ambil baris Header Utama (Kolom: Blok, No Rumah, Penghuni, dst)
+                if (!headerDibuat) {
+                    html += '<thead><tr>';
+                    cols.forEach(c => html += `<th>${c}</th>`);
+                    html += '</tr></thead><tbody>';
+                    headerDibuat = true;
                     return;
                 }
 
-                let cocokBlok = false;
-                if (blokPilihan === 'SEMUA') {
-                    cocokBlok = true;
+                // Cek pencocokan filter berdasarkan awalan No Rumah atau kolom Blok (misal: "BB-01" masuk ke Blok BB)
+                let noRumahAtauBlok = cols[0] ? cols[0].toUpperCase() : '';
+                let cocok = false;
+
+                if (pilihanBlok === 'SEMUA') {
+                    cocok = true;
                 } else {
-                    cocokBlok = cols.some(cell => cell.toLowerCase() === blokPilihan.toLowerCase());
+                    let kodeTarget = pilihanBlok.replace('Blok ', '').toUpperCase(); // Contoh: "BB" atau "A"
+                    // Cek jika nomor rumah diawali kode blok tersebut (misal: "BB-01" diawali "BB")
+                    if (noRumahAtauBlok.startsWith(kodeTarget + '-') || noRumahAtauBlok.startsWith(kodeTarget)) {
+                        cocok = true;
+                    }
                 }
 
-                if (cocokBlok && headerDitampilkan) {
+                if (cocok) {
                     html += '<tr>';
-                    cols.forEach(col => {
-                        html += `<td>${col}</td>`;
-                    });
+                    cols.forEach(c => html += `<td>${c}</td>`);
                     html += '</tr>';
                 }
             });
 
-            html += '</table>';
+            html += '</tbody></table>';
             document.getElementById('tabel-container').innerHTML = html;
         }
 
-        function filterBlok(blok) {
-            let buttons = document.querySelectorAll('.btn-filter');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            tampilkanBlokDipilih(blok);
+        function filterBlok(blok, element) {
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            tampilkanTabel(blok);
         }
     </script>
 
