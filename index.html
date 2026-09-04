@@ -1,390 +1,446 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Iuran Warga - Gaharu Residence 2</title>
-    <style>
-        :root {
-            --primary: #0f172a;
-            --accent: #3b82f6;
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius: 14px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaharu Residence II — Transparansi Iuran Warga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1F3D2E;
+    --forest-deep:#13251C;
+    --brass:#B8935A;
+    --brass-light:#D9BE8E;
+    --ivory:#F6F2E8;
+    --paper:#FFFEFB;
+    --line:#E2DBC8;
+    --ink:#20291F;
+    --ink-muted:#5C6A57;
+    --success:#2F6B4F;
+    --success-bg:#E6EFE7;
+    --danger:#A6472B;
+    --danger-bg:#F4E5DD;
+    --rule-red:#B1503A;
+    --sidebar-w:290px;
+  }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: var(--text-main);
-            padding: 12px;
-            min-height: 100vh;
-        }
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--ivory);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
 
-        .dashboard-container {
-            max-width: 1350px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+  .layout{
+    display:grid;
+    grid-template-columns:var(--sidebar-w) 1fr;
+    min-height:100vh;
+  }
 
-        .header-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 16px 20px;
-            border-radius: var(--radius);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+  /* ================= SIDEBAR ================= */
+  aside.sidebar{
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(184,147,90,0.10), transparent 55%),
+      var(--forest-deep);
+    color:var(--ivory);
+    padding:34px 26px 30px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    border-right:1px solid rgba(184,147,90,0.28);
+  }
 
-        .header-title h1 {
-            font-size: 18px;
-            color: var(--primary);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 2px;
-        }
+  .mark{display:flex;align-items:flex-start;gap:12px;}
+  .mark svg{flex-shrink:0;margin-top:2px;}
+  .mark h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:21px;
+    line-height:1.25;
+    letter-spacing:-0.01em;
+  }
+  .mark p{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:12.5px;
+    color:var(--brass-light);
+    margin-top:5px;
+    line-height:1.4;
+  }
 
-        .header-title p {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
+  .periode-tag{
+    display:inline-block;
+    align-self:flex-start;
+    border:1px solid rgba(216,189,140,0.55);
+    color:var(--brass-light);
+    padding:4px 12px;
+    border-radius:999px;
+    font-size:11.5px;
+    font-weight:600;
+  }
 
-        .badge-periode {
-            background: var(--accent-gradient);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
+  .sb-divider{border:none;border-top:1px solid rgba(216,189,140,0.2);}
 
-        .filter-section {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 10px 14px;
-            border-radius: var(--radius);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            align-items: center;
-        }
+  .sb-section h2{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:14px;
+    color:var(--brass-light);
+    margin-bottom:12px;
+  }
 
-        .btn-filter {
-            background-color: #ffffff;
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
+  .sb-stats{display:flex;flex-direction:column;gap:0;}
+  .sb-stats .row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .sb-stats .row:last-child{border-bottom:none;}
+  .sb-stats .row .num{font-family:'Fraunces',serif;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;}
+  .sb-stats .row.lunas .num{color:#8FD4AE;}
+  .sb-stats .row.belum .num{color:#E4A487;}
+  .sb-stats .row .label{font-size:12px;color:rgba(246,242,232,0.65);}
 
-        .btn-filter:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
+  .sb-bank{margin-bottom:14px;}
+  .sb-bank:last-child{margin-bottom:0;}
+  .sb-bank .bname{font-family:'Fraunces',serif;font-weight:600;font-size:14px;color:var(--ivory);}
+  .sb-bank .bmeta{font-size:12px;color:rgba(246,242,232,0.6);margin-top:3px;line-height:1.55;}
+  .sb-bank .bmeta b{color:var(--brass-light);font-variant-numeric:tabular-nums;font-weight:600;}
+  .wa-link{
+    display:inline-flex;align-items:center;gap:5px;margin-top:7px;
+    color:#8FD4AE;font-size:11.5px;font-weight:600;text-decoration:none;
+    border-bottom:1px solid rgba(143,212,174,0.35);padding-bottom:1px;
+  }
+  .wa-link:hover{border-color:#8FD4AE;}
 
-        .btn-filter.active {
-            background: var(--accent-gradient);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-        }
+  .sb-footnote{font-size:11px;color:rgba(246,242,232,0.5);line-height:1.6;font-style:italic;}
 
-        /* Table Card Responsive Khusus HP */
-        .table-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
+  /* ================= MAIN ================= */
+  main{
+    padding:36px 40px 60px;
+    background-image:repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 30px,
+      var(--line) 30px, var(--line) 31px
+    );
+    background-position:0 118px;
+  }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+  .content-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    flex-wrap:wrap;gap:14px;margin-bottom:22px;
+  }
+  .content-head h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--forest-deep);
+  }
+  .content-head span{font-size:13px;color:var(--ink-muted);display:block;margin-top:3px;}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 12px;
-            white-space: nowrap;
-        }
+  .controls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;margin-bottom:0;}
+  .tabs{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--line);}
+  .tab-btn{
+    background:none;border:none;padding:9px 14px 10px;font-size:13px;font-weight:500;
+    color:var(--ink-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .tab-btn:hover{color:var(--forest-deep);}
+  .tab-btn.active{color:var(--forest-deep);border-bottom-color:var(--brass);font-weight:600;}
 
-        th, td {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
-        }
+  .search-box{position:relative;min-width:210px;max-width:300px;}
+  .search-box input{
+    width:100%;padding:9px 12px 9px 32px;border:1px solid var(--line);border-radius:4px;
+    font-size:13px;font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);
+  }
+  .search-box input:focus{outline:none;border-color:var(--brass);}
+  .search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.45;}
 
-        th {
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+  /* Ledger table card with red margin rule */
+  .ledger-card{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--line);
+    margin-top:18px;
+    box-shadow:0 1px 0 var(--line), 0 12px 28px -18px rgba(19,37,28,0.35);
+  }
+  .ledger-card::before{
+    content:'';
+    position:absolute;
+    top:0; bottom:0; left:52px;
+    width:1px;
+    background:rgba(177,80,58,0.35);
+    z-index:1;
+  }
+  .table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:2;}
+  table{width:100%;border-collapse:collapse;text-align:left;font-size:13px;white-space:nowrap;}
+  th,td{padding:11px 16px;border-bottom:1px solid var(--line);}
+  th{
+    background:var(--forest);color:var(--ivory);font-weight:600;font-size:12px;
+    letter-spacing:0.01em;position:sticky;top:0;z-index:10;
+    border-bottom:2px solid var(--brass);
+  }
+  tbody tr:nth-child(even){background:rgba(184,147,90,0.05);}
+  tbody tr:hover{background:rgba(31,61,46,0.06);}
+  td{font-variant-numeric:tabular-nums;}
 
-        tbody tr:hover {
-            background-color: rgba(59, 130, 246, 0.03);
-        }
+  .badge{
+    display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+    border-radius:50%;font-size:12px;font-weight:700;
+  }
+  .badge.ok{background:var(--success-bg);color:var(--success);}
+  .badge.no{background:var(--danger-bg);color:var(--danger);}
+  .dash{color:#B7AF9E;}
+  .txt-lunas{color:var(--success);font-weight:600;}
+  .txt-menunggak{color:var(--danger);font-weight:600;}
 
-        .check { color: #10b981; font-weight: bold; font-size: 14px; }
-        .cross { color: #ef4444; font-weight: bold; font-size: 14px; }
-        .dash  { color: #94a3b8; font-weight: bold; font-size: 14px; }
+  .loading-state,.error-state{text-align:center;padding:40px 20px;color:var(--ink-muted);font-size:13px;position:relative;z-index:2;}
+  .error-state{color:var(--danger);}
 
-        /* Informasi Rekening & Pembayaran */
-        .info-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: var(--radius);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            font-size: 13px;
-            line-height: 1.6;
-        }
+  .meta-row{
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    padding:10px 16px;font-size:11.5px;color:var(--ink-muted);
+    background:var(--ivory);border-top:1px solid var(--line);position:relative;z-index:2;
+  }
 
-        .info-card p {
-            margin-bottom: 12px;
-            color: var(--text-main);
-        }
-
-        .bank-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 12px;
-            margin: 14px 0;
-        }
-
-        .bank-box {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 10px;
-        }
-
-        .bank-box b {
-            color: var(--primary);
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .btn-wa {
-            display: inline-block;
-            margin-top: 8px;
-            background-color: #25d366;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .btn-wa:hover {
-            background-color: #20ba5a;
-        }
-
-        .note-footer {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-style: italic;
-            margin-top: 10px;
-        }
-
-        .loading-state, .error-state {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-            font-style: italic;
-            font-size: 13px;
-        }
-
-        .error-state { color: #ef4444; }
-    </style>
+  /* ================= Responsive ================= */
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;}
+    aside.sidebar{position:relative;height:auto;border-right:none;border-bottom:1px solid rgba(184,147,90,0.28);}
+    main{padding:28px 18px 50px;}
+    .ledger-card::before{display:none;}
+  }
+</style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        
-        <!-- Header Informasi + Periode -->
-        <div class="header-card">
-            <div class="header-title">
-                <h1>📊 Transparansi Iuran Warga</h1>
-                <p>Forum Warga Gaharu Residence 2</p>
-            </div>
-            <div class="badge-periode">Periode 2026</div>
-        </div>
+<div class="layout">
 
-        <!-- Tombol Filter per Blok -->
-        <div class="filter-section" id="filter-buttons">
-            <button class="btn-filter active" onclick="filterBlok('SEMUA', this)">Semua Blok</button>
-            <button class="btn-filter" onclick="filterBlok('A', this)">Blok A</button>
-            <button class="btn-filter" onclick="filterBlok('B', this)">Blok B</button>
-            <button class="btn-filter" onclick="filterBlok('C', this)">Blok C</button>
-            <button class="btn-filter" onclick="filterBlok('D', this)">Blok D</button>
-            <button class="btn-filter" onclick="filterBlok('E', this)">Blok E</button>
-            <button class="btn-filter" onclick="filterBlok('FGH', this)">Blok FGH</button>
-        </div>
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
 
-        <!-- Konten Tabel dengan Scroll Horizontal untuk HP -->
-        <div class="table-card">
-            <div class="table-responsive">
-                <div id="tabel-container" class="loading-state">Memuat data dari Google Sheets...</div>
-            </div>
-        </div>
-
-        <!-- Informasi Rekening & Pembayaran -->
-        <div class="info-card">
-            <p>Sebagai informasi, di lingkungan kita terdapat iuran pengelolaan lingkungan (kebersihan & keamanan) sebesar <b>Rp40.000</b> per rumah setiap bulan.</p>
-            <p>Pembayaran iuran dapat dilakukan melalui transfer ke rekening berikut:</p>
-            
-            <div class="bank-grid">
-                <div class="bank-box">
-                    <b>Bank Mandiri</b>
-                    A/n ADITIYA<br>
-                    No. Rek: <b>1020013286031</b><br>
-                    <a href="https://wa.me/628972196999" target="_blank" class="btn-wa">💬 Konfirmasi WA Aditiya</a>
-                </div>
-
-                <div class="bank-box">
-                    <b>Bank BCA</b>
-                    A/n DERI<br>
-                    No. Rek: <b>2801815253</b><br>
-                    <a href="https://wa.me/6285283522020" target="_blank" class="btn-wa">💬 Konfirmasi WA Deri</a>
-                </div>
-            </div>
-
-            <div class="note-footer">
-                Saat sudah transfer, mohon konfirmasi langsung (japri) ke no WA di atas dan mengisi keterangan dengan <b>Nama dan No. Rumah</b> agar memudahkan pencatatan administrasi.
-            </div>
-        </div>
-
+    <div class="mark">
+      <svg width="30" height="30" viewBox="0 0 34 34" fill="none">
+        <path d="M17 3C17 3 9 9 9 18C9 24 12.5 28 17 30C21.5 28 25 24 25 18C25 9 17 3 17 3Z" stroke="#D9BE8E" stroke-width="1.3"/>
+        <path d="M17 8V27" stroke="#B8935A" stroke-width="1.1"/>
+        <path d="M17 13C17 13 13.5 14.5 13 18" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M17 17C17 17 20.5 18.5 21 22" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>Gaharu Residence II</h1>
+        <p>Catatan iuran warga, terbuka untuk semua penghuni</p>
+      </div>
     </div>
 
-    <script>
-        // MASUKKAN LINK CSV ANDA DI DALAM TANDA PETIK TUNGGAL DI BAWAH INI:
-        const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv';
-        let barisData = [];
+    <span class="periode-tag">Periode 2026</span>
 
-        fetch(urlCSV)
-            .then(response => {
-                if (!response.ok) throw new Error('Jaringan bermasalah: ' + response.status);
-                return response.text();
-            })
-            .then(text => {
-                if (text.includes('<!DOCTYPE html>')) {
-                    throw new Error('Link salah. Pastikan file Google Sheets sudah di-Publish to Web (format CSV).');
-                }
-                barisData = text.split('\n').filter(r => r.trim() !== '');
-                tampilkanTabel('SEMUA');
-            })
-            .catch(error => {
-                let container = document.getElementById('tabel-container');
-                container.className = 'error-state';
-                container.innerHTML = `⚠️ <b>Gagal Memuat Data</b><br><br>${error.message}`;
-            });
+    <hr class="sb-divider">
 
-        function parseCSVLine(text) {
-            let result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < text.length; i++) {
-                let char = text[i];
-                if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current.trim().replace(/^"|"$/g, ''));
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            result.push(current.trim().replace(/^"|"$/g, ''));
-            return result;
-        }
+    <div class="sb-section">
+      <h2>Ringkasan</h2>
+      <div class="sb-stats">
+        <div class="row"><span class="label">Total rumah tercatat</span><span class="num" id="stat-total">–</span></div>
+        <div class="row lunas"><span class="label">Sudah lunas</span><span class="num" id="stat-lunas">–</span></div>
+        <div class="row belum"><span class="label">Belum lunas</span><span class="num" id="stat-belum">–</span></div>
+      </div>
+    </div>
 
-        function tampilkanTabel(pilihanBlok) {
-            let html = '<table>';
-            let headerDibuat = false;
-            let targetColsIndex = [];
+    <hr class="sb-divider">
 
-            barisData.forEach((row, index) => {
-                const cols = parseCSVLine(row);
+    <div class="sb-section">
+      <h2>Pembayaran iuran</h2>
+      <p style="font-size:12px;color:rgba(246,242,232,0.65);line-height:1.6;margin-bottom:14px;">
+        Rp40.000 per rumah, setiap bulan, untuk kebersihan &amp; keamanan lingkungan.
+      </p>
 
-                if (!headerDibuat) {
-                    html += '<thead><tr>';
-                    cols.forEach((c, idx) => {
-                        let headerName = c.toUpperCase();
-                        // Hanya buang kolom yang mengandung kata "TUNGGAKAN" atau "JUMLAH"
-                        if (!headerName.includes('TUNGGAKAN') && !headerName.includes('JUMLAH')) {
-                            targetColsIndex.push(idx);
-                            html += `<th>${c}</th>`;
-                        }
-                    });
-                    html += '</tr></thead><tbody>';
-                    headerDibuat = true;
-                    return;
-                }
+      <div class="sb-bank">
+        <div class="bname">Bank Mandiri</div>
+        <div class="bmeta">a.n. Aditiya<br>No. rek. <b>1020013286031</b></div>
+        <a href="https://wa.me/628972196999" target="_blank" class="wa-link">Konfirmasi ke Aditiya →</a>
+      </div>
+      <div class="sb-bank">
+        <div class="bname">Bank BCA</div>
+        <div class="bmeta">a.n. Deri<br>No. rek. <b>2801815253</b></div>
+        <a href="https://wa.me/6285283522020" target="_blank" class="wa-link">Konfirmasi ke Deri →</a>
+      </div>
+    </div>
 
-                let kolomBlok = cols[0] ? cols[0].toUpperCase() : '';
-                let cocok = (pilihanBlok === 'SEMUA') || (kolomBlok === pilihanBlok.toUpperCase());
+    <hr class="sb-divider">
 
-                if (cocok) {
-                    html += '<tr>';
-                    targetColsIndex.forEach(idx => {
-                        let val = cols[idx] !== undefined ? cols[idx] : '';
-                        let cellContent = val;
+    <p class="sb-footnote">Setelah transfer, isi keterangan dengan nama dan nomor rumah, lalu konfirmasi ke WhatsApp di atas agar pencatatan lebih cepat dan akurat.</p>
 
-                        if (val === '✔' || val.toLowerCase() === 'v') {
-                            cellContent = `<span class="check">✔</span>`;
-                        } else if (val === '✖' || val === 'X' || val.toLowerCase() === 'x') {
-                            cellContent = `<span class="cross">✖</span>`;
-                        } else if (val === '-' || val === '—') {
-                            cellContent = `<span class="dash">—</span>`;
-                        } else if (val.toUpperCase().includes('LUNAS')) {
-                            cellContent = `<span style="color: #10b981; font-weight: 700;">${val}</span>`;
-                        } else if (val.toUpperCase().includes('MENUNGGAK')) {
-                            cellContent = `<span style="color: #ef4444; font-weight: 700;">${val}</span>`;
-                        }
+  </aside>
 
-                        html += `<td>${cellContent}</td>`;
-                    });
-                    html += '</tr>';
-                }
-            });
+  <!-- ============ MAIN ============ -->
+  <main>
 
-            html += '</tbody></table>';
-            document.getElementById('tabel-container').innerHTML = html;
-        }
+    <div class="content-head">
+      <div>
+        <h2>Status pembayaran per rumah</h2>
+        <span>Diperbarui manual secara berkala oleh pengurus.</span>
+      </div>
+    </div>
 
-        function filterBlok(blok, element) {
-            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            element.classList.add('active');
-            tampilkanTabel(blok);
-        }
-    </script>
+    <div class="controls">
+      <div class="tabs" id="filter-buttons">
+        <button class="tab-btn active" onclick="filterBlok('SEMUA', this)">Semua Blok</button>
+        <button class="tab-btn" onclick="filterBlok('A', this)">Blok A</button>
+        <button class="tab-btn" onclick="filterBlok('B', this)">Blok B</button>
+        <button class="tab-btn" onclick="filterBlok('C', this)">Blok C</button>
+        <button class="tab-btn" onclick="filterBlok('D', this)">Blok D</button>
+        <button class="tab-btn" onclick="filterBlok('E', this)">Blok E</button>
+        <button class="tab-btn" onclick="filterBlok('FGH', this)">Blok FGH</button>
+      </div>
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="Cari nama atau no. rumah…" oninput="tampilkanTabel(blokAktif)">
+      </div>
+    </div>
+
+    <div class="ledger-card">
+      <div class="table-responsive">
+        <div id="tabel-container" class="loading-state">Memuat data dari Google Sheets…</div>
+      </div>
+      <div class="meta-row">
+        <span id="jumlah-tampil"></span>
+        <span id="waktu-muat"></span>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  // MASUKKAN LINK CSV GOOGLE SHEETS ANDA DI DALAM TANDA PETIK TUNGGAL DI BAWAH INI:
+  const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv';
+  let barisData = [];
+  let blokAktif = 'SEMUA';
+
+  fetch(urlCSV)
+    .then(response => {
+      if (!response.ok) throw new Error('Jaringan bermasalah: ' + response.status);
+      return response.text();
+    })
+    .then(text => {
+      if (text.includes('<!DOCTYPE html>')) {
+        throw new Error('Link salah. Pastikan file Google Sheets sudah di-Publish to Web (format CSV).');
+      }
+      barisData = text.split('\n').filter(r => r.trim() !== '');
+      tampilkanTabel('SEMUA');
+      document.getElementById('waktu-muat').textContent =
+        'Data dimuat pukul ' + new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) +
+        ' · sumber: Google Sheets warga';
+    })
+    .catch(error => {
+      let container = document.getElementById('tabel-container');
+      container.className = 'error-state';
+      container.innerHTML = `⚠️ <b>Gagal Memuat Data</b><br><br>${error.message}`;
+    });
+
+  function parseCSVLine(text) {
+    let result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      let char = text[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        result.push(current.trim().replace(/^"|"$/g, ''));
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim().replace(/^"|"$/g, ''));
+    return result;
+  }
+
+  function tampilkanTabel(pilihanBlok) {
+    blokAktif = pilihanBlok;
+    const kataKunci = (document.getElementById('search-input').value || '').trim().toLowerCase();
+
+    let html = '<table>';
+    let headerDibuat = false;
+    let targetColsIndex = [];
+    let baris_tampil = 0;
+    let total_lunas = 0;
+    let total_belum = 0;
+
+    barisData.forEach((row) => {
+      const cols = parseCSVLine(row);
+
+      if (!headerDibuat) {
+        html += '<thead><tr>';
+        cols.forEach((c, idx) => {
+          let headerName = c.toUpperCase();
+          if (!headerName.includes('TUNGGAKAN') && !headerName.includes('JUMLAH')) {
+            targetColsIndex.push(idx);
+            html += `<th>${c}</th>`;
+          }
+        });
+        html += '</tr></thead><tbody>';
+        headerDibuat = true;
+        return;
+      }
+
+      let kolomBlok = cols[0] ? cols[0].toUpperCase() : '';
+      let cocokBlok = (pilihanBlok === 'SEMUA') || (kolomBlok === pilihanBlok.toUpperCase());
+      let cocokCari = !kataKunci || row.toLowerCase().includes(kataKunci);
+
+      if (cocokBlok && cocokCari) {
+        baris_tampil++;
+        html += '<tr>';
+        let statusTerakhir = '';
+        targetColsIndex.forEach(idx => {
+          let val = cols[idx] !== undefined ? cols[idx] : '';
+          let cellContent = val;
+
+          if (val === '✔' || val.toLowerCase() === 'v') {
+            cellContent = `<span class="badge ok">✔</span>`;
+            statusTerakhir = 'ok';
+          } else if (val === '✖' || val.toLowerCase() === 'x') {
+            cellContent = `<span class="badge no">✖</span>`;
+            statusTerakhir = 'no';
+          } else if (val === '-' || val === '—') {
+            cellContent = `<span class="dash">—</span>`;
+          } else if (val.toUpperCase().includes('LUNAS')) {
+            cellContent = `<span class="txt-lunas">${val}</span>`;
+            statusTerakhir = 'ok';
+          } else if (val.toUpperCase().includes('MENUNGGAK')) {
+            cellContent = `<span class="txt-menunggak">${val}</span>`;
+            statusTerakhir = 'no';
+          }
+          html += `<td>${cellContent}</td>`;
+        });
+        html += '</tr>';
+        if (statusTerakhir === 'ok') total_lunas++;
+        else if (statusTerakhir === 'no') total_belum++;
+      }
+    });
+
+    html += '</tbody></table>';
+    document.getElementById('tabel-container').innerHTML = html;
+    document.getElementById('jumlah-tampil').textContent = `Menampilkan ${baris_tampil} rumah`;
+
+    document.getElementById('stat-total').textContent = baris_tampil;
+    document.getElementById('stat-lunas').textContent = total_lunas;
+    document.getElementById('stat-belum').textContent = total_belum;
+  }
+
+  function filterBlok(blok, element) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    element.classList.add('active');
+    tampilkanTabel(blok);
+  }
+</script>
 </body>
 </html>
