@@ -25,9 +25,8 @@
     --danger:#A6472B;
     --danger-bg:#F4E5DD;
     --sidebar-w:270px;
-    --colw1:64px;
-    --colw2:96px;
-    --colw3:168px;
+    --colw1:60px;
+    --colw2:92px;
   }
 
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -141,21 +140,18 @@
     background:var(--forest);color:var(--ivory);font-weight:600;font-size:11.5px;
     position:sticky;top:0;z-index:15;border-bottom:2px solid var(--brass);
   }
-  th:nth-child(1),th:nth-child(2),th:nth-child(3){z-index:25;}
+  th:nth-child(1),th:nth-child(2){z-index:25;}
 
   th:nth-child(1),td:nth-child(1){position:sticky;left:0;width:var(--colw1);min-width:var(--colw1);}
-  th:nth-child(2),td:nth-child(2){position:sticky;left:var(--colw1);width:var(--colw2);min-width:var(--colw2);}
-  th:nth-child(3),td:nth-child(3){
-    position:sticky;left:calc(var(--colw1) + var(--colw2));width:var(--colw3);min-width:var(--colw3);
+  th:nth-child(2),td:nth-child(2){
+    position:sticky;left:var(--colw1);width:var(--colw2);min-width:var(--colw2);
     box-shadow:4px 0 6px -4px rgba(0,0,0,0.15);
   }
-  td:nth-child(1),td:nth-child(2),td:nth-child(3){z-index:5;background:var(--paper);}
+  td:nth-child(1),td:nth-child(2){z-index:5;background:var(--paper);}
   tbody tr:nth-child(even) td:nth-child(1),
-  tbody tr:nth-child(even) td:nth-child(2),
-  tbody tr:nth-child(even) td:nth-child(3){background:var(--paper-tint);}
+  tbody tr:nth-child(even) td:nth-child(2){background:var(--paper-tint);}
   tbody tr:hover td:nth-child(1),
-  tbody tr:hover td:nth-child(2),
-  tbody tr:hover td:nth-child(3){background:var(--paper-hover);}
+  tbody tr:hover td:nth-child(2){background:var(--paper-hover);}
 
   tbody tr:nth-child(even){background:var(--paper-tint);}
   tbody tr:hover{background:var(--paper-hover);}
@@ -209,7 +205,7 @@
 
   /* ================= Responsive ================= */
   @media (max-width:880px){
-    :root{--colw1:50px;--colw2:78px;--colw3:130px;--sidebar-w:270px;}
+    :root{--colw1:46px;--colw2:74px;--sidebar-w:270px;}
     .mobile-topbar{display:flex;}
     .layout{display:block;}
     aside.sidebar{position:fixed;top:0;left:0;width:86vw;max-width:300px;height:100vh;transform:translateX(-100%);transition:transform .28s ease;z-index:300;box-shadow:12px 0 30px -12px rgba(0,0,0,0.4);}
@@ -474,6 +470,14 @@
     idxStatusAkhir = statusIdxs.length ? statusIdxs[statusIdxs.length - 1] : -1;
   }
 
+  function classifyStatus(raw) {
+    const s = (raw || '').toUpperCase();
+    if (s.includes('MENUNGGAK')) return 'MENUNGGAK';
+    if (s.includes('KOSONG')) return 'KOSONG';
+    if (s.includes('LUNAS')) return 'LUNAS';
+    return '';
+  }
+
   // Ringkasan rumah (total / berpenghuni / kosong) — dihitung sekali dari seluruh data,
   // tidak mengikuti filter blok/status/pencarian.
   function hitungRingkasanRumah() {
@@ -483,7 +487,7 @@
       const cols = parseCSVLine(row);
       if (!cols[0]) return;
       total++;
-      const status = idxStatusAkhir >= 0 ? (cols[idxStatusAkhir] || '').trim().toUpperCase() : '';
+      const status = idxStatusAkhir >= 0 ? classifyStatus(cols[idxStatusAkhir]) : '';
       if (status === 'KOSONG') kosong++;
     });
     document.getElementById('sb-total').textContent = total;
@@ -533,7 +537,7 @@
       let cocokBlok = (pilihanBlok === 'SEMUA') || (kolomBlok === pilihanBlok.toUpperCase());
       let cocokCari = !kataKunci || row.toLowerCase().includes(kataKunci);
 
-      const statusBaris = idxStatusAkhir >= 0 ? (cols[idxStatusAkhir] || '').trim().toUpperCase() : '';
+      const statusBaris = idxStatusAkhir >= 0 ? classifyStatus(cols[idxStatusAkhir]) : '';
       let cocokStatus = (statusFilter === 'SEMUA') || (statusBaris === statusFilter);
 
       // Ringkasan uang: hitung berdasar blok+pencarian saja (bukan filter status),
@@ -561,12 +565,12 @@
             cellContent = `<span class="badge no">✖</span>`;
           } else if (val === '-' || val === '—') {
             cellContent = `<span class="dash">—</span>`;
-          } else if (val.toUpperCase() === 'LUNAS') {
-            cellContent = `<span class="txt-lunas">${val}</span>`;
-          } else if (val.toUpperCase() === 'MENUNGGAK') {
+          } else if (val.toUpperCase().includes('MENUNGGAK')) {
             cellContent = `<span class="txt-menunggak">${val}</span>`;
-          } else if (val.toUpperCase() === 'KOSONG') {
+          } else if (val.toUpperCase().includes('KOSONG')) {
             cellContent = `<span class="txt-kosong">${val}</span>`;
+          } else if (val.toUpperCase().includes('LUNAS')) {
+            cellContent = `<span class="txt-lunas">${val}</span>`;
           }
           html += `<td>${cellContent}</td>`;
         });
