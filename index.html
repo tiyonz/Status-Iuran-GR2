@@ -602,6 +602,86 @@
     document.getElementById('sidebar-overlay').classList.toggle('open');
     document.body.style.overflow = document.getElementById('sidebar').classList.contains('open') ? 'hidden' : '';
   }
+
+  // Fungsi untuk memuat dan merender Laporan Kas Warga
+function muatDataKas() {
+  if (!urlCSV_Kas || urlCSV_Kas.includes('URL_CSV_KAS')) return;
+
+  fetch(urlCSV_Kas + '&t=' + new Date().getTime())
+    .then(response => {
+      if (!response.ok) throw new Error('Gagal memuat data kas');
+      return response.text();
+    })
+    .then(text => {
+      let rows = text.split('\n').filter(r => r.trim() !== '');
+      if (rows.length <= 1) return;
+
+      let totalPemasukan = 0;
+      let totalPengeluaran = 0;
+      let htmlKasTable = '<table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th><th>Saldo Berjalan</th></tr></thead><tbody>';
+      
+      // Asumsi urutan kolom kas di Google Sheets Anda:
+      // Kolom 0: Tanggal, Kolom 1: Keterangan, Kolom 2: Kategori, Kolom 3: Masuk/Pemasukan, Kolom 4: Keluar/Pengeluaran, Kolom 5: Saldo Berjalan
+      // (Sesuaikan index angka di bawah jika urutan kolom di sheet kas Anda berbeda)
+      
+      rows.forEach((row, index) => {
+        if (index === 0) return; // Lewati baris header
+        let cols = parseCSVLine(row);
+        if (!cols[0]) return;
+
+        let tanggal = cols[0] || '';
+        let Costcode = cols[1] || '';
+        let Uraian = cols[2] || '';
+        let masuk = parseFloat((cols[3] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+        let keluar = parseFloat((cols[4] || '0').replace(/[^0-9.-]+/g, '')) || 0;
+        let saldo = cols[5] || '';
+
+        totalPemasukan += masuk;
+        totalPengeluaran += keluar;
+
+        let jumlahTampil = masuk > 0 ? '+ ' + formatRupiah(masuk) : '- ' + formatRupiah(keluar);
+        let warnaJumlah = masuk > 0 ? 'color: var(--success);' : 'color: var(--danger);';
+
+        htmlKasTable += `<tr>
+          <td>${tanggal}</td>
+          <td>${Costcode}</td>
+          <td>${Deskripsi}</td>
+          <td style="${warnaJumlah} font-weight:600;">${jumlahTampil}</td>
+          <td>${saldo.startsWith('Rp') ? saldo : formatRupiah(parseFloat(saldo) || 0)}</td>
+        </tr>`;
+      });
+
+      htmlKasTable += '</tbody></table>';
+
+      // Masukkan hasil hitung ke kartu statistik kas di atas
+      let saldoAkhir = totalPemasukan - totalPengeluaran;
+      
+      // Update tampilan di HTML panel kas
+      document.querySelector('.kas-panel').innerHTML = `
+        <div class="kas-head">
+          <h3>Laporan Pemasukan &amp; Pengeluaran Kas Warga</h3>
+          <span class="kas-badge" style="background: var(--success-bg); color: var(--success); border-color: var(--success);">Aktif &amp; Real-time</span>
+        </div>
+        <div class="kas-stats">
+          <div class="kas-stat"><div class="label">Total pemasukan</div><div class="val" style="color:var(--success)">${formatRupiah(totalPemasukan)}</div></div>
+          <div class="kas-stat"><div class="label">Total pengeluaran</div><div class="val" style="color:var(--danger)">${formatRupiah(totalPengeluaran)}</div></div>
+          <div class="kas-stat"><div class="label">Saldo kas akhir</div><div class="val" style="color:var(--forest-deep)">${formatRupiah(saldoAkhir)}</div></div>
+        </div>
+        <div class="kas-table-wrap">
+          ${htmlKasTable}
+        </div>
+      `;
+    })
+    .catch(err => {
+      console.error("Gagal memuat kas:", err);
+    });
+}
+
+// Panggil fungsi kas setelah halaman dimuat
+document.addEventListener("DOMContentLoaded", function() {
+  muatDataKas();
+});
+  
 </script>
 </body>
 </html>
