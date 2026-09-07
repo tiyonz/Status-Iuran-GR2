@@ -375,24 +375,24 @@
     </div>
 
     <!-- Laporan Kas (placeholder) -->
-    <div class="kas-panel">
-      <div class="kas-head">
-        <h3>Laporan Pemasukan &amp; Pengeluaran Kas Warga</h3>
-        <span class="kas-badge">Sedang dalam pemeliharaan</span>
+    <!-- Laporan Kas -->
+      <div class="kas-panel" id="kas-container">
+        <div class="kas-head">
+          <h3>Laporan Pemasukan &amp; Pengeluaran Kas Warga</h3>
+          <span class="kas-badge">Sedang dalam pemeliharaan</span>
+        </div>
+        <div class="kas-stats">
+          <div class="kas-stat"><div class="label">Total pemasukan</div><div class="val">Segera hadir</div></div>
+          <div class="kas-stat"><div class="label">Total pengeluaran</div><div class="val">Segera hadir</div></div>
+          <div class="kas-stat"><div class="label">Saldo kas</div><div class="val">Segera hadir</div></div>
+        </div>
+        <div class="kas-table-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th><th>Saldo Berjalan</th></tr></thead>
+          </table>
+          <div class="kas-empty">Data laporan kas akan tersedia di sini setelah terhubung ke catatan kas warga.</div>
+        </div>
       </div>
-      <div class="kas-stats">
-        <div class="kas-stat"><div class="label">Total pemasukan</div><div class="val">Segera hadir</div></div>
-        <div class="kas-stat"><div class="label">Total pengeluaran</div><div class="val">Segera hadir</div></div>
-        <div class="kas-stat"><div class="label">Saldo kas</div><div class="val">Segera hadir</div></div>
-      </div>
-      <div class="kas-table-wrap">
-        <table>
-          <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th><th>Saldo Berjalan</th></tr></thead>
-        </table>
-        <div class="kas-empty">Data laporan kas akan tersedia di sini setelah terhubung ke catatan kas warga.</div>
-      </div>
-    </div>
-
   </main>
 
 </div>
@@ -603,7 +603,7 @@
     document.body.style.overflow = document.getElementById('sidebar').classList.contains('open') ? 'hidden' : '';
   }
 
- // Ganti dengan link CSV Google Sheets Kas Anda yang baru:
+// Ganti dengan link CSV Google Sheets Kas Anda yang baru:
 const urlCSV_Kas = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0sWLFKmVSbXI4UxYc4EzJrU5JyMufTSEzUw5COof0e92MQ9Ee68GYxhAH5ZBRfj8SRkvUa6lwfTei/pub?gid=481199506&single=true&output=csv';
 
 function muatDataKas() {
@@ -654,7 +654,8 @@ function muatDataKas() {
 
       let saldoAkhir = totalPemasukan - totalPengeluaran;
       
-      let kasPanel = document.querySelector('.kas-panel');
+      // >>> DI SINI TEMPATNYA (Bagian akhir fungsi muatDataKas) <<<
+      let kasPanel = document.getElementById('kas-container');
       if (kasPanel) {
         kasPanel.innerHTML = `
           <div class="kas-head">
@@ -676,6 +677,10 @@ function muatDataKas() {
       console.error("Gagal memuat kas:", err);
     });
 }
+  document.addEventListener("DOMContentLoaded", function() {
+  muatDataKas();
+  // ... (fungsi lain jika ada)
+});
   
 </script>
 </body>
