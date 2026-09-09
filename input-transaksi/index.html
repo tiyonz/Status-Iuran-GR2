@@ -1,356 +1,206 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Input Transaksi — Gaharu Residence II</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --forest:#1F3D2E;
-    --forest-deep:#13251C;
-    --brass:#B8935A;
-    --brass-light:#D9BE8E;
-    --ivory:#F6F2E8;
-    --paper:#FFFEFB;
-    --line:#E2DBC8;
-    --ink:#20291F;
-    --ink-muted:#5C6A57;
-    --success:#2F6B4F;
-    --success-bg:#E6EFE7;
-    --danger:#A6472B;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    font-family:'Inter',sans-serif;
-    background:var(--ivory);
-    color:var(--ink);
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:32px 16px;
-  }
-  .main-wrapper{
-    width:100%;max-width:850px;
-    display:flex;flex-direction:column;gap:24px;
-  }
-  .card-container{
-    background:var(--paper);border:1px solid var(--line);
-    border-radius:12px;box-shadow:0 12px 28px -18px rgba(19,37,28,0.35);overflow:hidden;
-  }
-  .card-header{background:var(--forest-deep);color:var(--ivory);padding:24px;border-bottom:2px solid var(--brass);}
-  .card-header h1{font-family:'Fraunces',serif;font-weight:600;font-size:20px;}
-  .card-header p{font-family:'Fraunces',serif;font-style:italic;font-size:12.5px;color:var(--brass-light);margin-top:4px;}
-  .card-body{padding:24px;}
-  .form-group{margin-bottom:16px;}
-  label{display:block;font-size:12.5px;font-weight:600;color:var(--forest-deep);margin-bottom:6px;}
-  input, select{
-    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;
-    font-size:13.5px;background:var(--ivory);color:var(--ink);
-  }
-  input:focus, select:focus{outline:none;border-color:var(--brass);background:var(--paper);}
-  
-  .info-box{
-    background: #EAF2EE; border: 1px solid var(--success); padding: 10px 12px; border-radius: 6px; font-size: 13px; color: var(--success); margin-bottom: 16px; display:none;
-  }
-
-  .btn-submit{
-    width:100%;background:var(--forest);color:var(--ivory);border:none;padding:12px;
-    border-radius:6px;font-weight:600;font-size:13.5px;cursor:pointer;margin-top:12px;
-  }
-  .btn-submit:hover{background:var(--forest-deep);}
-  .back-link{display:block;text-align:center;margin-top:16px;font-size:12.5px;color:var(--ink-muted);text-decoration:none;}
-  .back-link:hover{color:var(--forest-deep);text-decoration:underline;}
-  
-  .alert-box{padding:12px;border-radius:6px;font-size:12.5px;margin-bottom:16px;display:none;}
-  .alert-box.success{background:var(--success-bg);color:var(--success);border:1px solid rgba(47,107,79,0.3);}
-  .alert-box.error{background:#F4E5DD;color:var(--danger);border:1px solid rgba(166,71,43,0.3);}
-
-  /* Filter & Tabel Sesi Input */
-  .filter-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-  .table-container{overflow-x:auto;margin-top:12px;}
-  table{width:100%;border-collapse:collapse;font-size:12px;}
-  th, td{padding:8px 10px;border:1px solid var(--line);text-align:left;}
-  th{background:var(--forest);color:var(--ivory);}
-  
-  .summary-footer{margin-top:12px;font-size:13px;font-weight:600;text-align:right;color:var(--forest-deep);}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Input Transaksi Iuran Warga</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 600px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input[type="date"], input[type="text"], input[type="number"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        .checkbox-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fafafa; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .checkbox-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        button { background-color: #28a745; color: white; padding: 12px; border: none; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #218838; }
+        .loading { text-align: center; color: #007bff; display: none; margin-top: 10px; }
+    </style>
 </head>
 <body>
 
-  <div class="main-wrapper">
-    <div class="card-container">
-      <div class="card-header">
-        <h1>Gaharu Residence II</h1>
-        <p>Form Pengurus — Catat Transaksi Iuran Warga</p>
-      </div>
-      <div class="card-body">
-        <div id="alertBox" class="alert-box"></div>
-
-        <!-- Verifikasi Kunci URL Web App -->
-        <div class="form-group" id="authBox">
-          <label for="webAppUrlInput">Masukkan Kunci Akses (URL Web App Apps Script)</label>
-          <div style="display:flex; gap:8px;">
-            <input type="password" id="webAppUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
-            <button type="button" id="unlockBtn" style="background:var(--brass); color:var(--forest-deep); border:none; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer;" onclick="verifikasiAkses()">Buka Akses</button>
-          </div>
-        </div>
-
-        <!-- Form Input Utama -->
-        <form id="inputForm" style="display:none;">
-          <div class="form-group">
-            <label for="tanggal">Tanggal Input</label>
-            <input type="date" id="tanggal" required>
-          </div>
-
-          <div class="form-group">
-            <label for="nama">Nama Warga / Penghuni</label>
-            <input type="text" id="nama" list="listWarga" required placeholder="Ketik atau pilih nama warga..." onchange="cekBelumBayar()">
-            <datalist id="listWarga"></datalist>
-          </div>
-
-          <div id="infoBelumBayar" class="info-box">
-            <strong>Bulan Belum Bayar:</strong> <span id="teksBelumBayar">-</span>
-          </div>
-
-          <div class="form-group">
-            <label for="bulan">Bulan yang Dibayar</label>
-            <input type="text" id="bulan" required placeholder="Contoh: Januari / Januari, Februari">
-          </div>
-
-          <div class="form-group">
-            <label for="nominal">Nominal (Rp)</label>
-            <input type="number" id="nominal" required value="40000">
-          </div>
-
-          <div class="form-group">
-            <label for="diterimaOleh">Diterima Oleh</label>
-            <select id="diterimaOleh" required>
-              <option value="">-- Pilih Petugas / Pengurus --</option>
-            </select>
-          </div>
-
-          <button type="submit" id="submitBtn" class="btn-submit">Simpan Transaksi Baru</button>
-        </form>
-
-        <a href="../index.html" class="back-link">← Kembali ke Dashboard Utama</a>
-      </div>
-    </div>
-
-    <!-- Kotak Filter & Rekap Transaksi Sesi Ini -->
-    <div class="card-container" id="rekapCard" style="display:none;">
-      <div class="card-header" style="background:var(--forest);">
-        <h1>Rekap Transaksi Sesi Ini</h1>
-        <p>Filter data transaksi yang baru di-input untuk pengecekan totalan</p>
-      </div>
-      <div class="card-body">
-        <div class="filter-row">
-          <div class="form-group" style="margin-bottom:0;">
-            <label for="filterTanggal">Filter Berdasarkan Tanggal</label>
-            <input type="date" id="filterTanggal" onchange="filterDataSession()">
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label for="filterPetugas">Filter Diterima Oleh</label>
-            <select id="filterPetugas" onchange="filterDataSession()">
-              <option value="">-- Semua Petugas --</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Nama Warga</th>
-                <th>Bulan</th>
-                <th>Nominal</th>
-                <th>Diterima Oleh</th>
-              </tr>
-            </thead>
-            <tbody id="sessionTableBody">
-              <tr><td colspan="5" style="text-align:center; color:var(--ink-muted);">Belum ada transaksi yang di-input pada sesi ini.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="summary-footer">
-          Total Terkumpul (Sesuai Filter): <span id="totalNominal">Rp 0</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let ACTIVE_WEB_APP_URL = "";
-    let globalDataTransaksi = [];
-    let sesiTransaksiBaru = []; 
-
-    document.getElementById('tanggal').valueAsDate = new Date();
-
-    function verifikasiAkses() {
-      const urlInput = document.getElementById('webAppUrlInput').value.trim();
-      const alertBox = document.getElementById('alertBox');
-
-      if (!urlInput.startsWith("https://script.google.com")) {
-        alertBox.className = 'alert-box error';
-        alertBox.textContent = 'URL Web App tidak valid!';
-        alertBox.style.display = 'block';
-        return;
-      }
-
-      document.getElementById('unlockBtn').textContent = 'Memeriksa...';
-      
-      fetch(urlInput)
-        .then(response => response.json())
-        .then(res => {
-          ACTIVE_WEB_APP_URL = urlInput;
-          globalDataTransaksi = res.transaksi;
-          
-          // 1. Isi Datalist Nama Warga dari Kolom H (res.warga)
-          const datalist = document.getElementById('listWarga');
-          datalist.innerHTML = '';
-          res.warga.forEach(nama => {
-            let opt = document.createElement('option');
-            opt.value = nama;
-            datalist.appendChild(opt);
-          });
-
-          // 2. Isi Dropdown Petugas / Diterima Oleh dari Kolom B Sheet Pengurus (res.petugas)
-          const selectPetugas = document.getElementById('diterimaOleh');
-          const filterPetugas = document.getElementById('filterPetugas');
-          selectPetugas.innerHTML = '<option value="">-- Pilih Petugas --</option>';
-          filterPetugas.innerHTML = '<option value="">-- Semua Petugas --</option>';
-          
-          res.petugas.forEach(petugasNama => {
-            let opt1 = document.createElement('option');
-            opt1.value = petugasNama; opt1.textContent = petugasNama;
-            selectPetugas.appendChild(opt1);
-
-            let opt2 = document.createElement('option');
-            opt2.value = petugasNama; opt2.textContent = petugasNama;
-            filterPetugas.appendChild(opt2);
-          });
-
-          document.getElementById('authBox').style.display = 'none';
-          document.getElementById('inputForm').style.display = 'block';
-          document.getElementById('rekapCard').style.display = 'block';
-          alertBox.style.display = 'none';
-        })
-        .catch(err => {
-          console.error(err);
-          alertBox.className = 'alert-box error';
-          alertBox.textContent = 'Gagal terhubung. Pastikan URL benar & Deployment berstatus "Anyone".';
-          alertBox.style.display = 'block';
-          document.getElementById('unlockBtn').textContent = 'Buka Akses';
-        });
-    }
-
-    function cekBelumBayar() {
-      const namaDipilih = document.getElementById('nama').value.trim().toLowerCase();
-      const infoBox = document.getElementById('infoBelumBayar');
-      const teksBelumBayar = document.getElementById('teksBelumBayar');
-
-      let foundRow = globalDataTransaksi.find(row => String(row[2]).trim().toLowerCase() === namaDipilih);
-      if (foundRow) {
-        let bulanBelum = foundRow[3] || "Lunas / Tidak ada data"; 
-        teksBelumBayar.textContent = bulanBelum;
-        infoBox.style.display = 'block';
-      } else {
-        infoBox.style.display = 'none';
-      }
-    }
-
-    document.getElementById('inputForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const alertBox = document.getElementById('alertBox');
-      
-      btn.textContent = 'Menyimpan...';
-      btn.disabled = true;
-
-      const payload = {
-        tanggal: document.getElementById('tanggal').value,
-        nama: document.getElementById('nama').value,
-        bulan: document.getElementById('bulan').value,
-        nominal: document.getElementById('nominal').value,
-        diterimaOleh: document.getElementById('diterimaOleh').value
-      };
-
-      fetch(ACTIVE_WEB_APP_URL, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(result => {
-        alertBox.className = 'alert-box ' + (result.status === 'success' ? 'success' : 'error');
-        alertBox.textContent = result.message;
-        alertBox.style.display = 'block';
+<div class="container">
+    <h2>Form Input Transaksi Iuran</h2>
+    <form id="transaksiForm">
         
-        if(result.status === 'success') {
-          sesiTransaksiBaru.push({
-            tanggal: payload.tanggal,
-            nama: payload.nama,
-            bulan: payload.bulan,
-            nominal: Number(payload.nominal),
-            diterimaOleh: payload.diterimaOleh
-          });
-          
-          filterDataSession(); 
-          document.getElementById('inputForm').reset();
-          document.getElementById('tanggal').valueAsDate = new Date();
-          document.getElementById('infoBelumBayar').style.display = 'none';
-        }
-        btn.textContent = 'Simpan Transaksi Baru';
-        btn.disabled = false;
-      })
-      .catch(err => {
-        console.error(err);
-        alertBox.className = 'alert-box error';
-        alertBox.textContent = 'Kesalahan koneksi server.';
-        alertBox.style.display = 'block';
-        btn.textContent = 'Simpan Transaksi Baru';
-        btn.disabled = false;
-      });
+        <div class="form-group">
+            <label for="tanggal">Tanggal Transaksi:</label>
+            <input type="date" id="tanggal" required>
+        </div>
+
+        <div class="form-group">
+            <label for="kodeRumah">Kode Rumah:</label>
+            <input type="text" id="kodeRumah" placeholder="Contoh: A-12">
+        </div>
+
+        <div class="form-group">
+            <label for="namaWarga">No Rumah + Penghuni (Nama Warga):</label>
+            <select id="namaWarga" required>
+                <option value="">-- Memuat Data Warga... --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="belumBayar">Belum Bayar (Bulan sebelumnya jika ada):</label>
+            <input type="text" id="belumBayar" placeholder="Contoh: Nov, Des">
+        </div>
+
+        <div class="form-group">
+            <label>Pilih Bulan yang Dibayar:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="bulan" value="Jan"> Jan</label>
+                <label><input type="checkbox" name="bulan" value="Feb"> Feb</label>
+                <label><input type="checkbox" name="bulan" value="Mar"> Mar</label>
+                <label><input type="checkbox" name="bulan" value="Apr"> Apr</label>
+                <label><input type="checkbox" name="bulan" value="Mei"> Mei</label>
+                <label><input type="checkbox" name="bulan" value="Jun"> Jun</label>
+                <label><input type="checkbox" name="bulan" value="Jul"> Jul</label>
+                <label><input type="checkbox" name="bulan" value="Agu"> Agu</label>
+                <label><input type="checkbox" name="bulan" value="Sep"> Sep</label>
+                <label><input type="checkbox" name="bulan" value="Okt"> Okt</label>
+                <label><input type="checkbox" name="bulan" value="Nov"> Nov</label>
+                <label><input type="checkbox" name="bulan" value="Des"> Des</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="jumlahBulan">Jumlah Bulan:</label>
+            <input type="number" id="jumlahBulan" readonly placeholder="Otomatis terhitung">
+        </div>
+
+        <div class="form-group">
+            <label for="iuranBulan">Iuran per Bulan (Rp):</label>
+            <input type="number" id="iuranBulan" placeholder="Contoh: 50000" oninput="hitungTotal()">
+        </div>
+
+        <div class="form-group">
+            <label for="nominalSeharusnya">Nominal Seharusnya (Rp):</label>
+            <input type="number" id="nominalSeharusnya" readonly placeholder="Otomatis terhitung">
+        </div>
+
+        <div class="form-group">
+            <label for="nominalDiterima">Nominal Diterima (Rp):</label>
+            <input type="number" id="nominalDiterima" required placeholder="Masukkan uang yang diterima">
+        </div>
+
+        <div class="form-group">
+            <label for="petugas">Diterima Oleh (Petugas):</label>
+            <select id="petugas" required>
+                <option value="">-- Memuat Data Petugas... --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="keterangan">Keterangan:</label>
+            <textarea id="keterangan" rows="2" placeholder="Catatan tambahan (opsional)"></textarea>
+        </div>
+
+        <button type="submit" id="btnSimpan">Simpan Transaksi</button>
+        <div class="loading" id="loadingText">Sedang menyimpan data... Mohon tunggu.</div>
+    </form>
+</div>
+
+<script>
+    // ⚠️ Ganti URL DI BAWAH INI dengan URL Web App Google Apps Script Anda yang aktif!
+    const WEB_APP_URL = "URL_WEB_APP_ANDA_DISINI";
+
+    // 1. Ambil data dropdown saat halaman pertama kali dibuka
+    window.onload = function() {
+        // Set tanggal hari ini secara otomatis
+        document.getElementById('tanggal').valueAsDate = new Date();
+
+        fetch(WEB_APP_URL)
+            .then(response => response.json())
+            .then(data => {
+                // Isi dropdown Nama Warga
+                let selectWarga = document.getElementById('namaWarga');
+                selectWarga.innerHTML = '<option value="">-- Pilih Warga --</option>';
+                data.warga.forEach(nama => {
+                    let opt = document.createElement('option');
+                    opt.value = nama;
+                    opt.textContent = nama;
+                    selectWarga.appendChild(opt);
+                });
+
+                // Isi dropdown Petugas
+                let selectPetugas = document.getElementById('petugas');
+                selectPetugas.innerHTML = '<option value="">-- Pilih Petugas --</option>';
+                data.petugas.forEach(petugas => {
+                    let opt = document.createElement('option');
+                    opt.value = petugas;
+                    opt.textContent = petugas;
+                    selectPetugas.appendChild(opt);
+                });
+            })
+            .catch(err => console.error("Gagal memuat data awal:", err));
+    };
+
+    // 2. Hitung jumlah bulan otomatis saat checkbox dicentang & hitung nominal seharusnya
+    const checkboxes = document.querySelectorAll('input[name="bulan"]');
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            let checkedCount = document.querySelectorAll('input[name="bulan"]:checked').length;
+            document.getElementById('jumlahBulan').value = checkedCount;
+            hitungTotal();
+        });
     });
 
-    function filterDataSession() {
-      const fTgl = document.getElementById('filterTanggal').value;
-      const fPetugas = document.getElementById('filterPetugas').value;
-      
-      const filtered = sesiTransaksiBaru.filter(item => {
-        let matchTgl = fTgl ? item.tanggal === fTgl : true;
-        let matchPetugas = fPetugas ? item.diterimaOleh === fPetugas : true;
-        return matchTgl && matchPetugas;
-      });
-
-      const tbody = document.getElementById('sessionTableBody');
-      tbody.innerHTML = '';
-      
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--ink-muted);">Tidak ada data transaksi yang cocok dengan filter.</td></tr>`;
-        document.getElementById('totalNominal').textContent = 'Rp 0';
-        return;
-      }
-
-      let totalSum = 0;
-      filtered.forEach(item => {
-        totalSum += item.nominal;
-        let tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.tanggal}</td>
-          <td>${item.nama}</td>
-          <td>${item.bulan}</td>
-          <td>Rp ${item.nominal.toLocaleString('id-ID')}</td>
-          <td>${item.diterimaOleh}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById('totalNominal').textContent = 'Rp ' + totalSum.toLocaleString('id-ID');
+    function hitungTotal() {
+        let jmlBulan = parseFloat(document.getElementById('jumlahBulan').value) || 0;
+        let iuran = parseFloat(document.getElementById('iuranBulan').value) || 0;
+        document.getElementById('nominalSeharusnya').value = jmlBulan * iuran;
     }
-  </script>
+
+    // 3. Kirim data saat tombol submit ditekan
+    document.getElementById('transaksiForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        document.getElementById('btnSimpan').style.display = 'none';
+        document.getElementById('loadingText').style.display = 'block';
+
+        // Kumpulkan bulan yang dicentang
+        let bulanList = [];
+        document.querySelectorAll('input[name="bulan"]:checked').forEach(cb => {
+            bulanList.push(cb.value);
+        });
+
+        let formData = {
+            tanggal: document.getElementById('tanggal').value,
+            kodeRumah: document.getElementById('kodeRumah').value,
+            nama: document.getElementById('namaWarga').value,
+            belumBayar: document.getElementById('belumBayar').value,
+            bulanList: bulanList,
+            jumlahBulan: document.getElementById('jumlahBulan').value,
+            iuranBulan: document.getElementById('iuranBulan').value,
+            nominalSeharusnya: document.getElementById('nominalSeharusnya').value,
+            nominalDiterima: document.getElementById('nominalDiterima').value,
+            diterimaOleh: document.getElementById('petugas').value,
+            keterangan: document.getElementById('keterangan').value
+        };
+
+        fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            alert('Sukses! ' + result.message);
+            document.getElementById('transaksiForm').reset();
+            document.getElementById('tanggal').valueAsDate = new Date(); // Reset tanggal ke hari ini
+            document.getElementById('btnSimpan').style.display = 'block';
+            document.getElementById('loadingText').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menyimpan data.');
+            document.getElementById('btnSimpan').style.display = 'block';
+            document.getElementById('loadingText').style.display = 'none';
+        });
+    });
+</script>
+
 </body>
 </html>
