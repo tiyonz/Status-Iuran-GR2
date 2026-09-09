@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Iuran Warga</title>
+    <title>Input Transaksi Iuran Warga</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #10b981;
+            --primary-dark: #059669;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
@@ -16,102 +17,75 @@
             --border-color: #e2e8f0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 2rem 1rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        header { margin-bottom: 2rem; text-align: center; }
-        header h1 { font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem; }
-        header p { color: var(--text-muted); font-size: 0.95rem; }
-        .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); overflow: hidden; }
-        .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
-        th, td { padding: 12px 16px; white-space: nowrap; border-bottom: 1px solid var(--border-color); }
-        th { background-color: #f1f5f9; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        tbody tr:hover { background-color: #f8fafc; }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 2rem 1rem; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: var(--card-bg); width: 100%; max-width: 500px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); }
+        h2 { margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
+        input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.875rem; }
+        button { width: 100%; background-color: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+        button:hover { background-color: var(--primary-dark); }
+        .back-link { display: block; text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fa-solid fa-wallet"></i> Rekapitulasi Iuran Warga</h1>
-            <p>Sistem Transparansi Data Pembayaran Iuran Warga Perumahan</p>
-        </header>
-
-        <div class="card">
-            <div class="table-responsive">
-                <table id="transactionTable">
-                    <thead>
-                        <tr id="tableHeader"></tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <tr>
-                            <td colspan="20" class="text-center" style="padding: 2rem; color: var(--text-muted);">
-                                <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Sheets...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="card">
+        <h2><i class="fa-solid fa-pen-to-square"></i> Form Input Iuran Warga</h2>
+        <form id="inputForm">
+            <div class="form-group">
+                <label for="nama">Nama Warga</label>
+                <input type="text" id="nama" required placeholder="Contoh: Budi Santoso">
             </div>
-        </div>
+            <div class="form-group">
+                <label for="blok">Blok / Nomor Rumah</label>
+                <input type="text" id="blok" required placeholder="Contoh: Blok A No. 12">
+            </div>
+            <div class="form-group">
+                <label for="nominal">Nominal Pembayaran (Rp)</label>
+                <input type="number" id="nominal" required placeholder="Contoh: 50000">
+            </div>
+            <button type="submit" id="submitBtn"><i class="fa-solid fa-floppy-disk"></i> Simpan Data</button>
+        </form>
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
     </div>
 
     <script>
-        // Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda
         const WEB_APP_URL = "MASUKKAN_URL_WEB_APP_ANDA_DISINI";
 
-        window.onload = function() {
-            fetch(WEB_APP_URL)
-                .then(response => response.json())
-                .then(data => renderTable(data))
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('tableBody').innerHTML = `<tr><td colspan="20" class="text-center" style="color: red;">Gagal memuat data. Periksa kembali URL Web App.</td></tr>`;
-                });
-        };
-
-        function renderTable(data) {
-            if (!data || data.length === 0) return;
-
-            const headerRow = document.getElementById('tableHeader');
-            const tableBody = document.getElementById('tableBody');
+        document.getElementById('inputForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            headerRow.innerHTML = '';
-            tableBody.innerHTML = '';
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = 'Menyimpan...';
+            btn.disabled = true;
 
-            // Render Header (Baris 0 dari Spreadsheet)
-            data[0].forEach(headerTitle => {
-                const th = document.createElement('th');
-                th.textContent = headerTitle;
-                headerRow.appendChild(th);
+            // Sesuaikan susunan array data dengan kolom spreadsheet Anda
+            const payload = [
+                document.getElementById('nama').value,
+                document.getElementById('blok').value,
+                document.getElementById('nominal').value
+                // Tambahkan data kolom lain jika diperlukan
+            ];
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message);
+                document.getElementById('inputForm').reset();
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Data';
+                btn.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan data.');
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Data';
+                btn.disabled = false;
             });
-
-            // Render Data Rows
-            for (let i = 1; i < data.length; i++) {
-                const tr = document.createElement('tr');
-                data[i].forEach((cellValue, colIndex) => {
-                    const td = document.createElement('td');
-                    
-                    // Kolom bulan (misal indeks 4 sampai 15) diubah jadi ikon centang/silang
-                    if (colIndex >= 4 && colIndex <= 15) {
-                        td.className = 'text-center';
-                        if (cellValue === true || cellValue === "TRUE" || cellValue === "true") {
-                            td.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #10b981; font-size: 1rem;"></i>';
-                        } else {
-                            td.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color: #ef4444; font-size: 1rem;"></i>';
-                        }
-                    } else if (typeof cellValue === 'number' || colIndex >= 16) {
-                        td.className = 'text-right';
-                        td.textContent = cellValue;
-                    } else {
-                        td.textContent = cellValue;
-                    }
-                    
-                    tr.appendChild(td);
-                });
-                tableBody.appendChild(tr);
-            }
-        }
+        });
     </script>
 </body>
 </html>
