@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk — Gaharu Residence II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1F3D2E;
+    --forest-deep:#13251C;
+    --brass:#B8935A;
+    --brass-light:#D9BE8E;
+    --ivory:#F6F2E8;
+    --paper:#FFFEFB;
+    --paper-tint:#FBF7EE;
+    --line:#E2DBC8;
+    --ink:#20291F;
+    --ink-muted:#5C6A57;
+    --danger:#A6472B;
+    --danger-bg:#F4E5DD;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:radial-gradient(ellipse at 20% 0%, rgba(184,147,90,0.14), transparent 55%), var(--forest-deep);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .login-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:36px 32px;
+    width:100%;max-width:420px;
+    box-shadow:0 24px 60px -20px rgba(0,0,0,0.5);
+  }
+  .mark{display:flex;gap:12px;align-items:flex-start;margin-bottom:22px;}
+  .mark h1{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--forest-deep);line-height:1.25;}
+  .mark p{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:12px;color:var(--ink-muted);margin-top:4px;}
+
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .form-group label{font-size:12px;font-weight:600;color:var(--ink-muted);}
+  .form-group .hint{font-size:11px;color:var(--ink-muted);font-style:italic;line-height:1.5;}
+  .form-control{
+    padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);
+    font-family:'Inter',sans-serif;font-size:13.5px;color:var(--ink);width:100%;
+  }
+  .form-control:focus{outline:none;border-color:var(--brass);}
+
+  .remember{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:12.5px;color:var(--ink-muted);}
+  .remember input{width:15px;height:15px;}
+
+  .btn-primary{
+    background:var(--forest);color:var(--ivory);border:none;padding:11px 18px;border-radius:6px;
+    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;width:100%;
+    transition:background .15s;margin-top:6px;
+  }
+  .btn-primary:hover{background:var(--forest-deep);}
+  .btn-primary:disabled{opacity:0.6;cursor:default;}
+
+  .alert{
+    background:var(--danger-bg);color:var(--danger);border:1px solid rgba(166,71,43,0.3);
+    border-radius:6px;padding:10px 12px;font-size:12.5px;margin-bottom:16px;display:none;line-height:1.5;
+  }
+  .alert.show{display:block;}
+
+  .back-link{display:block;text-align:center;margin-top:18px;font-size:12.5px;color:var(--ink-muted);text-decoration:none;}
+  .back-link:hover{color:var(--forest-deep);}
+
+  .footnote{font-size:11px;color:var(--ink-muted);font-style:italic;margin-top:18px;text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="mark">
+      <svg width="30" height="30" viewBox="0 0 34 34" fill="none">
+        <path d="M17 3C17 3 9 9 9 18C9 24 12.5 28 17 30C21.5 28 25 24 25 18C25 9 17 3 17 3Z" stroke="#B8935A" stroke-width="1.3"/>
+        <path d="M17 8V27" stroke="#B8935A" stroke-width="1.1"/>
+        <path d="M17 13C17 13 13.5 14.5 13 18" stroke="#B8935A" stroke-width="0.9" stroke-linecap="round"/>
+        <path d="M17 17C17 17 20.5 18.5 21 22" stroke="#B8935A" stroke-width="0.9" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>Gaharu Residence II</h1>
+        <p>Akses panel kelola transaksi</p>
+      </div>
+    </div>
+
+    <div class="alert" id="alert-box"></div>
+
+    <form id="login-form" onsubmit="prosesLogin(event)">
+      <div class="form-group">
+        <label for="weburl">URL Web App Apps Script</label>
+        <input type="url" id="weburl" class="form-control" placeholder="https://script.google.com/macros/s/.../exec" required>
+        <span class="hint">Tempel URL deployment Apps Script sheet TRANSAKSI. Ini yang berfungsi sebagai kunci akses — tidak disimpan di kode GitHub, hanya di browser ini.</span>
+      </div>
+
+      <label class="remember">
+        <input type="checkbox" id="remember" checked>
+        Ingat di perangkat ini
+      </label>
+
+      <button type="submit" class="btn-primary" id="btn-login">Masuk</button>
+    </form>
+
+    <a href="dashboard.html" class="back-link">← Kembali ke Dashboard Publik</a>
+
+    <p class="footnote">Khusus pengurus Gaharu Residence II. Hubungi admin jika Anda belum memiliki URL Web App ini.</p>
+  </div>
+
+<script>
+  const STORAGE_KEY = 'grw_weburl';
+
+  // Jika sudah tersimpan URL sebelumnya (localStorage), langsung lempar ke input.html.
+  (function cekSesiAwal() {
+    const tersimpan = localStorage.getItem(STORAGE_KEY);
+    if (tersimpan) window.location.replace('input.html');
+  })();
+
+  function tampilkanError(pesan) {
+    const box = document.getElementById('alert-box');
+    box.textContent = pesan;
+    box.classList.add('show');
+  }
+
+  function prosesLogin(e) {
+    e.preventDefault();
+    document.getElementById('alert-box').classList.remove('show');
+
+    let url = document.getElementById('weburl').value.trim();
+    const ingat = document.getElementById('remember').checked;
+    const btn = document.getElementById('btn-login');
+
+    if (!url.includes('script.google.com')) {
+      tampilkanError('URL sepertinya bukan URL Web App Apps Script yang valid.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Memeriksa koneksi...';
+
+    // Uji koneksi: panggil Web App, pastikan responsnya JSON valid dari script kita.
+    fetch(url + '?action=ping')
+      .then(res => {
+        if (!res.ok) throw new Error('Server merespons status ' + res.status);
+        return res.json();
+      })
+      .then(result => {
+        btn.disabled = false;
+        btn.textContent = 'Masuk';
+        if (result && result.status === 'success') {
+          if (ingat) {
+            localStorage.setItem(STORAGE_KEY, url);
+          } else {
+            sessionStorage.setItem(STORAGE_KEY, url);
+          }
+          window.location.replace('input.html');
+        } else {
+          tampilkanError('URL terhubung tapi responsnya tidak sesuai. Pastikan Code.gs ter-deploy dengan benar.');
+        }
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.textContent = 'Masuk';
+        tampilkanError('Gagal terhubung: ' + err.message + '. Periksa kembali URL dan pastikan deployment Apps Script sudah "Anyone" access.');
+      });
+  }
+</script>
+</body>
+</html>
