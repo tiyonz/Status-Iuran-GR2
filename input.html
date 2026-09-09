@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gaharu Residence II — Input & Kelola Transaksi Iuran</title>
+<title>Gaharu Residence II — Input Transaksi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --forest:#1F3D2E;
@@ -24,92 +24,85 @@
     --success-bg:#E6EFE7;
     --danger:#A6472B;
     --danger-bg:#F4E5DD;
-    --sidebar-w:250px;
+    --sidebar-w:240px;
   }
 
   *{box-sizing:border-box;margin:0;padding:0;}
   html, body{width:100%; height:100%; overflow-x:hidden;}
 
   body{
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-family:'Inter',sans-serif;
     background:var(--ivory);
     color:var(--ink);
-    -webkit-font-smoothing:antialiased;
   }
 
-  .layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh;width:100vw;overflow-x:hidden;}
+  .layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh;width:100vw;}
 
   aside.sidebar{
-    background:radial-gradient(ellipse at 20% 0%, rgba(184,147,90,0.10), transparent 55%), var(--forest-deep);
+    background:var(--forest-deep);
     color:var(--ivory);
-    padding:24px 18px;
+    padding:20px 16px;
     position:sticky;top:0;height:100vh;overflow-y:auto;
-    display:flex;flex-direction:column;gap:18px;
-    border-right:1px solid rgba(184,147,90,0.28);
+    display:flex;flex-direction:column;gap:16px;
+    border-right:1px solid rgba(184,147,90,0.2);
   }
   .mark{display:flex;align-items:flex-start;gap:10px;justify-content:space-between;width:100%;}
-  .mark-left{display:flex;gap:10px;align-items:flex-start;}
-  .mark svg{flex-shrink:0;margin-top:2px;}
-  .mark h1{font-family:'Fraunces',serif;font-weight:600;font-size:18px;line-height:1.2;letter-spacing:-0.01em;}
-  .mark p{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:11px;color:var(--brass-light);margin-top:4px;line-height:1.3;}
+  .mark h1{font-family:'Fraunces',serif;font-weight:600;font-size:16px;line-height:1.2;}
+  .mark p{font-family:'Fraunces',serif;font-style:italic;font-size:10.5px;color:var(--brass-light);margin-top:3px;}
 
   .periode-tag{
-    display:inline-block;align-self:flex-start;border:1px solid rgba(216,189,140,0.55);
-    color:var(--brass-light);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;
+    display:inline-block;border:1px solid rgba(216,189,140,0.5);
+    color:var(--brass-light);padding:3px 8px;border-radius:999px;font-size:10.5px;font-weight:600;
   }
-  .sb-divider{border:none;border-top:1px solid rgba(216,189,140,0.2);}
-  .sb-section h2{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:13px;color:var(--brass-light);margin-bottom:8px;}
+  .sb-divider{border:none;border-top:1px solid rgba(216,189,140,0.15);}
+  .sb-section h2{font-family:'Fraunces',serif;font-style:italic;font-size:12px;color:var(--brass-light);margin-bottom:6px;}
 
   .sb-stats{display:flex;flex-direction:column;}
-  .sb-stats .row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .sb-stats .row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
   .sb-stats .row:last-child{border-bottom:none;}
-  .sb-stats .row .num{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
-  .sb-stats .row .label{font-size:11px;color:rgba(246,242,232,0.65);}
-
-  .sb-footnote{font-size:10.5px;color:rgba(246,242,232,0.5);line-height:1.5;font-style:italic;}
+  .sb-stats .row .num{font-family:'Fraunces',serif;font-size:14px;font-weight:600;}
+  .sb-stats .row .label{font-size:10.5px;color:rgba(246,242,232,0.6);}
 
   .hamburger-btn{
     background:none;border:1px solid rgba(216,189,140,0.4);border-radius:6px;
-    width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-    color:var(--brass-light);flex-shrink:0;
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    color:var(--brass-light);flex-shrink:0;cursor:pointer;
   }
 
   .mobile-topbar{
-    display:none;position:sticky;top:0;z-index:200;align-items:center;gap:12px;
+    display:none;position:sticky;top:0;z-index:200;align-items:center;gap:10px;
     padding:10px 14px;background:var(--forest-deep);color:var(--ivory);
-    border-bottom:1px solid rgba(184,147,90,0.28);
+    border-bottom:1px solid rgba(184,147,90,0.2);
   }
-  .mobile-topbar .mt-title{font-family:'Fraunces',serif;font-weight:600;font-size:14px;}
-  .mobile-topbar .mt-sub{font-family:'Fraunces',serif;font-style:italic;font-size:10px;color:rgba(246,242,232,0.6);}
+  .mobile-topbar .mt-title{font-family:'Fraunces',serif;font-weight:600;font-size:13px;}
   .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,25,18,0.5);z-index:299;}
   .sidebar-overlay.open{display:block;}
 
-  main{padding:20px 24px 40px; width:100%; max-width:calc(100vw - var(--sidebar-w)); overflow-x:hidden;}
+  main{padding:18px 20px 40px; width:100%; max-width:calc(100vw - var(--sidebar-w)); overflow-x:hidden;}
 
-  .content-head{margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
-  .content-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--forest-deep);}
-  .content-head span{font-size:12px;color:var(--ink-muted);display:block;margin-top:2px;}
+  .content-head{margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px;}
+  .content-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--forest-deep);}
+  .content-head span{font-size:11.5px;color:var(--ink-muted);display:block;margin-top:2px;}
 
   .btn-primary{
     background:var(--forest);color:var(--ivory);border:none;padding:8px 14px;border-radius:6px;
-    font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;
-    display:inline-flex;align-items:center;gap:6px;transition:background .15s;
+    font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
   }
   .btn-primary:hover{background:var(--forest-deep);}
 
   .form-card{
-    background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px;
-    margin-bottom:20px;box-shadow:0 8px 20px -14px rgba(19,37,28,0.3);display:none;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px;
+    margin-bottom:16px;box-shadow:0 6px 18px -12px rgba(19,37,28,0.3);display:none;
   }
   .form-card.open{display:block;}
-  .form-card h3{font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:var(--forest-deep);margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:8px;}
+  .form-card h3{font-family:'Fraunces',serif;font-weight:600;font-size:14px;color:var(--forest-deep);margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px;}
 
-  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px;}
-  .form-group{display:flex;flex-direction:column;gap:4px;}
-  .form-group label{font-size:11.5px;font-weight:600;color:var(--ink-muted);}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:10px;}
+  .form-group{display:flex;flex-direction:column;gap:3px;}
+  .form-group label{font-size:11px;font-weight:600;color:var(--ink-muted);}
   .form-control{
-    padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--paper);
-    font-family:'Inter',sans-serif;font-size:12.5px;color:var(--ink);
+    padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--paper);
+    font-size:12px;color:var(--ink);
   }
   .form-control:focus{outline:none;border-color:var(--brass);}
 
@@ -120,76 +113,70 @@
     font-weight: 600;
   }
 
-  .bulan-container{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px;}
+  .bulan-container{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:10px;}
   .bulan-checkbox{
-    border:1px solid var(--line);border-radius:6px;padding:6px 2px;text-align:center;font-size:11.5px;
-    background:var(--paper-tint);cursor:pointer;user-select:none;transition:all .15s;
+    border:1px solid var(--line);border-radius:6px;padding:5px 2px;text-align:center;font-size:11px;
+    background:var(--paper-tint);cursor:pointer;user-select:none;
   }
   .bulan-checkbox input{display:none;}
   .bulan-checkbox.checked{background:var(--success-bg);border-color:var(--success);color:var(--success);font-weight:600;}
 
-  .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;border-top:1px solid var(--line);padding-top:12px;}
+  .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
   .btn-secondary{
-    background:none;border:1px solid var(--line);padding:8px 14px;border-radius:6px;
-    font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer;
+    background:none;border:1px solid var(--line);padding:7px 12px;border-radius:6px;
+    font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer;
   }
-  .btn-secondary:hover{background:var(--paper-hover);color:var(--ink);}
 
-  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .search-box{position:relative;min-width:220px;max-width:280px;flex:1;}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .search-box{position:relative;min-width:200px;max-width:260px;flex:1;}
   .search-box input{
-    width:100%;padding:7px 10px 7px 30px;border:1px solid var(--line);border-radius:6px;
-    font-size:12px;font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);
+    width:100%;padding:6px 10px 6px 28px;border:1px solid var(--line);border-radius:6px;
+    font-size:11.5px;background:var(--paper);color:var(--ink);
   }
-  .search-box input:focus{outline:none;border-color:var(--brass);}
-  .search-box svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);opacity:0.45;}
+  .search-box svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);opacity:0.4;}
 
-  .ledger-card{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 8px 20px -14px rgba(19,37,28,0.3);}
-  .table-scroll{width:100%;max-height:55vh;overflow-y:auto;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .ledger-card{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 6px 18px -12px rgba(19,37,28,0.3);}
+  .table-scroll{width:100%;max-height:50vh;overflow-y:auto;overflow-x:auto;-webkit-overflow-scrolling:touch;}
   
-  /* Tabel Dibuat Padat Agar Pas di Layar Laptop Tanpa Geser Horizontal Ekstrem */
-  table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;}
-  th,td{padding:8px 10px;border-bottom:1px solid var(--line);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
   th{
-    background:var(--forest);color:var(--ivory);font-weight:600;font-size:11px;
+    background:var(--forest);color:var(--ivory);font-weight:600;font-size:10.5px;
     position:sticky;top:0;z-index:15;border-bottom:2px solid var(--brass);
   }
   tbody tr:nth-child(even){background:var(--paper-tint);}
   tbody tr:hover{background:var(--paper-hover);}
-  td{font-variant-numeric:tabular-nums;}
 
   .action-btns{display:flex;gap:4px;}
   .btn-icon{
-    background:none;border:1px solid var(--line);border-radius:4px;padding:3px 6px;font-size:10.5px;cursor:pointer;font-weight:600;
+    background:none;border:1px solid var(--line);border-radius:4px;padding:2px 5px;font-size:10px;cursor:pointer;font-weight:600;
   }
   .btn-icon.edit{color:var(--forest);border-color:var(--forest);}
-  .btn-icon.edit:hover{background:var(--success-bg);}
   .btn-icon.del{color:var(--danger);border-color:var(--danger);}
-  .btn-icon.del:hover{background:var(--danger-bg);}
 
-  .loading-state,.error-state{text-align:center;padding:28px 16px;color:var(--ink-muted);font-size:12px;}
+  .loading-state,.error-state{text-align:center;padding:24px 14px;color:var(--ink-muted);font-size:11.5px;}
   .error-state{color:var(--danger);}
 
   .meta-row{
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:8px 14px;
-    font-size:10.5px;color:var(--ink-muted);background:var(--ivory);border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:7px 12px;
+    font-size:10px;color:var(--ink-muted);background:var(--ivory);border-top:1px solid var(--line);
   }
 
   #toast{
-    position:fixed;bottom:20px;right:20px;background:var(--forest-deep);color:var(--ivory);
-    padding:10px 16px;border-radius:6px;box-shadow:0 8px 20px rgba(0,0,0,0.3);z-index:1000;
-    font-size:12px;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s ease;
+    position:fixed;bottom:16px;right:16px;background:var(--forest-deep);color:var(--ivory);
+    padding:10px 16px;border-radius:6px;box-shadow:0 6px 16px rgba(0,0,0,0.3);z-index:1000;
+    font-size:11.5px;transform:translateY(60px);opacity:0;transition:all .3s ease;
   }
   #toast.show{transform:translateY(0);opacity:1;}
 
   @media (max-width:880px){
     .mobile-topbar{display:flex;}
     .layout{display:block;width:100vw;}
-    aside.sidebar{position:fixed;top:0;left:0;width:82vw;max-width:280px;height:100vh;transform:translateX(-100%);transition:transform .28s ease;z-index:300;box-shadow:10px 0 25px -10px rgba(0,0,0,0.4);}
+    aside.sidebar{position:fixed;top:0;left:0;width:78vw;max-width:260px;height:100vh;transform:translateX(-100%);transition:transform .25s ease;z-index:300;}
     aside.sidebar.open{transform:translateX(0);}
     #sidebar-close-btn{display:flex !important;}
-    main{padding:14px 10px 40px; max-width:100vw;}
+    main{padding:12px 10px 30px; max-width:100vw;}
     .bulan-container{grid-template-columns:repeat(4,1fr);}
   }
 </style>
@@ -197,13 +184,10 @@
 <body>
 
 <div class="mobile-topbar">
-  <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Buka menu">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-  <div>
-    <div class="mt-title">Gaharu Residence II</div>
-    <div class="mt-sub">Kelola Transaksi Iuran Warga</div>
-  </div>
+  <div class="mt-title">Gaharu Residence II — Input Transaksi</div>
 </div>
 
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -211,21 +195,11 @@
 <div class="layout">
   <aside class="sidebar" id="sidebar">
     <div class="mark">
-      <div class="mark-left">
-        <svg width="24" height="24" viewBox="0 0 34 34" fill="none">
-          <path d="M17 3C17 3 9 9 9 18C9 24 12.5 28 17 30C21.5 28 25 24 25 18C25 9 17 3 17 3Z" stroke="#D9BE8E" stroke-width="1.3"/>
-          <path d="M17 8V27" stroke="#B8935A" stroke-width="1.1"/>
-          <path d="M17 13C17 13 13.5 14.5 13 18" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
-          <path d="M17 17C17 17 20.5 18.5 21 22" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
-        </svg>
-        <div>
-          <h1>Gaharu Residence II</h1>
-          <p>Panel Input &amp; Administrasi</p>
-        </div>
+      <div>
+        <h1>Gaharu Residence II</h1>
+        <p>Panel Transaksi Warga</p>
       </div>
-      <button onclick="toggleSidebar()" class="hamburger-btn" style="display:none;" id="sidebar-close-btn" aria-label="Tutup menu">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button onclick="toggleSidebar()" class="hamburger-btn" style="display:none;" id="sidebar-close-btn">×</button>
     </div>
 
     <span class="periode-tag">Periode 2026</span>
@@ -234,35 +208,30 @@
     <div class="sb-section">
       <h2>Menu Cepat</h2>
       <div class="sb-stats">
-        <div class="row"><a href="#" onclick="bukaFormTambah(); return false;" style="color:var(--brass-light); text-decoration:none; font-weight:600; padding:3px 0;">+ Catat Pembayaran Baru</a></div>
-        <div class="row"><a href="#" onclick="muatData(); return false;" style="color:rgba(246,242,232,0.8); text-decoration:none; padding:3px 0;">🔄 Refresh Data</a></div>
-        <div class="row"><a href="index.html" style="color:rgba(246,242,232,0.8); text-decoration:none; padding:3px 0;">← Kembali ke Status</a></div>
+        <div class="row"><a href="#" onclick="bukaFormTambah(); return false;" style="color:var(--brass-light); text-decoration:none; font-weight:600; padding:2px 0;">+ Catat Baru</a></div>
+        <div class="row"><a href="#" onclick="muatData(); return false;" style="color:rgba(246,242,232,0.8); text-decoration:none; padding:2px 0;">🔄 Refresh Data</a></div>
+        <div class="row"><a href="index.html" style="color:rgba(246,242,232,0.8); text-decoration:none; padding:2px 0;">← Kembali ke Status</a></div>
       </div>
     </div>
 
     <hr class="sb-divider">
-
     <div class="sb-section">
       <h2>Sesi</h2>
       <div class="sb-stats">
-        <div class="row"><span class="label">Status</span><span class="num" id="sb-username" style="font-size:12px;">–</span></div>
+        <div class="row"><span class="label">Status</span><span class="num" id="sb-username" style="font-size:11px;">Aktif</span></div>
       </div>
-      <div class="row" style="margin-top:4px;"><a href="#" onclick="logout(); return false;" style="color:var(--danger-bg); text-decoration:none; padding:3px 0; font-weight:600;">🔓 Keluar</a></div>
+      <div class="row" style="margin-top:4px;"><a href="#" onclick="logout(); return false;" style="color:var(--danger-bg); text-decoration:none; font-weight:600;">🔓 Keluar</a></div>
     </div>
-
-    <hr class="sb-divider">
-    <p class="sb-footnote">Panel administrasi transaksi database Google Sheets.</p>
   </aside>
 
   <main>
     <div class="content-head">
       <div>
         <h2>Kelola Transaksi Pembayaran</h2>
-        <span>Input data pembayaran iuran warga terhubung langsung ke Google Sheets.</span>
+        <span>Pencatatan iuran terhubung langsung ke spreadsheet.</span>
       </div>
       <button class="btn-primary" onclick="bukaFormTambah()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Catat Transaksi Baru
+        + Catat Transaksi Baru
       </button>
     </div>
 
@@ -271,8 +240,6 @@
       <form id="transaksi-form" onsubmit="simpanData(event)">
         <input type="hidden" id="rowId" name="rowId">
         <input type="hidden" id="action" name="action" value="insert">
-        <!-- Kode Rumah disimpan tersembunyi/diambil otomatis dari pilihan nama gabungan warga -->
-        <input type="hidden" id="kodeRumah" name="kodeRumah">
 
         <div class="form-grid">
           <div class="form-group">
@@ -280,7 +247,7 @@
             <input type="date" id="tanggal" class="form-control" required>
           </div>
           <div class="form-group">
-            <label for="namaGabunganInput">Nama Warga (No. Rumah - Nama)</label>
+            <label for="namaGabunganInput">No Rumah Penghuni (Pilih dari List)</label>
             <input type="text" id="namaGabunganInput" class="form-control" list="list-warga" placeholder="Ketik/Pilih warga..." required oninput="deteksiDataWarga(this.value)">
             <datalist id="list-warga"></datalist>
           </div>
@@ -296,7 +263,7 @@
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom:10px;">
+        <div class="form-group" style="margin-bottom:8px;">
           <label>Pilih Bulan yang Dibayar:</label>
           <div class="bulan-container" id="bulan-container"></div>
         </div>
@@ -308,7 +275,7 @@
           </div>
           <div class="form-group">
             <label for="nominalDiterima">Total Nominal Diterima (Rp)</label>
-            <input type="number" id="nominalDiterima" class="form-control" placeholder="Otomatis / Manual" required>
+            <input type="number" id="nominalDiterima" class="form-control" required>
           </div>
           <div class="form-group" style="grid-column: span 2;">
             <label for="keterangan">Keterangan / Catatan</label>
@@ -325,7 +292,7 @@
 
     <div class="controls">
       <div class="search-box">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="search-input" placeholder="Cari nama atau no rumah..." oninput="renderTabel()">
       </div>
     </div>
@@ -372,12 +339,11 @@
   let globalDataWarga = [];
   let globalDataTransaksi = [];
   let globalDataPetugas = [];
-  let mapWargaBelumBayar = {}; // Menyimpan data mapping Belum Bayar per warga
+  let mapWargaBelumBayar = {};
   const listBulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
   document.addEventListener("DOMContentLoaded", function() {
     if (!sesiAktif) return;
-    document.getElementById('sb-username').textContent = 'Terhubung';
     inisialisasiFormBulan();
     muatData();
     document.getElementById('tanggal').valueAsDate = new Date();
@@ -410,7 +376,6 @@
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebar-overlay').classList.toggle('open');
-    document.body.style.overflow = document.getElementById('sidebar').classList.contains('open') ? 'hidden' : '';
   }
 
   function tampilkanToast(pesan, isError = false) {
@@ -418,24 +383,16 @@
     toast.textContent = pesan;
     toast.style.background = isError ? 'var(--danger)' : 'var(--forest-deep)';
     toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3500);
+    setTimeout(() => toast.classList.remove('show'), 3000);
   }
 
   function deteksiDataWarga(val) {
-    // Memisahkan atau mencocokkan input Nama Warga (Format: "NoRumah - Nama" atau diambil dari list)
     let matchedKey = globalDataWarga.find(w => w === val);
     if (matchedKey) {
-      // Ambil kode rumah dari format "NoRumah - Nama" atau pisahkan dengan strip pertama
-      let parts = matchedKey.split('-');
-      let kode = parts[0] ? parts[0].trim() : '';
-      document.getElementById('kodeRumah').value = kode;
-      
-      // Ambil nilai Belum Bayar otomatis dari sheet yang sudah dimuat
-      let belumBayarVal = mapWargaBelumBayar[matchedKey] || '-';
+      let belumBayarVal = mapWargaBelumBayar[matchedKey] || 'Lunas / Data baru';
       document.getElementById('fieldBelumBayar').value = belumBayarVal;
     } else {
-      document.getElementById('kodeRumah').value = '';
-      document.getElementById('fieldBelumBayar').value = 'Warga tidak dikenal / baru';
+      document.getElementById('fieldBelumBayar').value = 'Warga tidak dikenal';
     }
   }
 
@@ -443,41 +400,32 @@
     if (!sesiAktif) return;
     let container = document.getElementById('tabel-container');
     container.className = 'loading-state';
-    container.innerHTML = 'Memuat data dari Google Sheets...';
+    container.innerHTML = 'Memuat data...';
 
     fetch(WEB_APP_URL + '?action=data')
-      .then(res => {
-        if (!res.ok) throw new Error('Respon jaringan bermasalah.');
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
-        if (data.status === 'error') { tampilkanToast(data.message || 'Terjadi kesalahan di server.', true); }
         globalDataWarga = data.warga || [];
         globalDataTransaksi = data.transaksi || [];
         globalDataPetugas = data.petugas || [];
 
-        // Petakan data "Belum Bayar" dari transaksi terakhir tiap warga jika tersedia
         mapWargaBelumBayar = {};
         globalDataTransaksi.forEach(t => {
-          let namaGabung = (t.kodeRumah && t.nama) ? (t.kodeRumah + ' - ' + t.nama) : t.nama;
-          if (namaGabung && t.belumBayar) {
-            mapWargaBelumBayar[namaGabung] = t.belumBayar;
+          if (t.namaGabungan && t.belumBayar) {
+            mapWargaBelumBayar[t.namaGabungan] = t.belumBayar;
           }
         });
 
-        let dlWarga = document.getElementById('list-warga');
-        dlWarga.innerHTML = globalDataWarga.map(w => `<option value="${w}">`).join('');
-
-        let selPetugas = document.getElementById('diterimaOleh');
-        selPetugas.innerHTML = '<option value="">Pilih Petugas...</option>' + 
+        document.getElementById('list-warga').innerHTML = globalDataWarga.map(w => `<option value="${w}">`).join('');
+        document.getElementById('diterimaOleh').innerHTML = '<option value="">Pilih Petugas...</option>' + 
           globalDataPetugas.map(p => `<option value="${p}">${p}</option>`).join('');
 
         renderTabel();
-        document.getElementById('waktu-muat').textContent = 'Terakhir diperbarui: ' + new Date().toLocaleTimeString('id-ID');
+        document.getElementById('waktu-muat').textContent = 'Diperbarui: ' + new Date().toLocaleTimeString('id-ID');
       })
       .catch(err => {
         container.className = 'error-state';
-        container.innerHTML = `⚠️ <b>Gagal memuat data</b><br><br>${err.message}<br><br>Pastikan URL Apps Script sudah benar.`;
+        container.innerHTML = `⚠️ Gagal memuat data: ${err.message}`;
       });
   }
 
@@ -486,22 +434,20 @@
     let container = document.getElementById('tabel-container');
 
     let filtered = globalDataTransaksi.filter(t => {
-      return (t.nama && t.nama.toLowerCase().includes(keyword)) ||
-             (t.kodeRumah && t.kodeRumah.toLowerCase().includes(keyword)) ||
+      return (t.namaGabungan && t.namaGabungan.toLowerCase().includes(keyword)) ||
              (t.keterangan && t.keterangan.toLowerCase().includes(keyword));
     });
 
     if (filtered.length === 0) {
-      container.innerHTML = `<div class="loading-state">Tidak ada data transaksi yang ditemukan.</div>`;
+      container.innerHTML = `<div class="loading-state">Tidak ada data transaksi.</div>`;
       document.getElementById('jumlah-tampil').textContent = 'Menampilkan 0 data';
       return;
     }
 
     let html = `<table><thead><tr>
-      <th style="width:60px;">Aksi</th>
+      <th style="width:50px;">Aksi</th>
       <th>Tanggal</th>
-      <th>No. Rumah</th>
-      <th>Nama Warga</th>
+      <th>No Rumah Penghuni</th>
       <th>Belum Bayar</th>
       <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Mei</th><th>Jun</th>
       <th>Jul</th><th>Agu</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Des</th>
@@ -522,13 +468,12 @@
           </div>
         </td>
         <td>${tglFormatted}</td>
-        <td><b>${t.kodeRumah || ''}</b></td>
-        <td>${t.nama || ''}</td>
+        <td><b>${t.namaGabungan || ''}</b></td>
         <td><span style="color:var(--danger); font-weight:600;">${t.belumBayar || ''}</span></td>`;
 
       if (t.bulanArray) {
         t.bulanArray.forEach(bStatus => {
-          let badge = bStatus ? `<span style="color:var(--success); font-weight:700;">✔</span>` : `<span style="color:#B7AF9E;">—</span>`;
+          let badge = bStatus ? `<span style="color:var(--success); font-weight:700;">✔</span>` : `<span style="color:#C2B8A3;">—</span>`;
           html += `<td style="text-align:center;">${badge}</td>`;
         });
       }
@@ -557,7 +502,6 @@
     document.getElementById('tanggal').valueAsDate = new Date();
     document.getElementById('fieldBelumBayar').value = '';
     resetCheckboxes();
-    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
   function tutupForm() {
@@ -581,26 +525,13 @@
       bulanList.push(el.value);
     });
 
-    // Ambil nilai input Nama Warga Gabungan
-    let namaGabunganVal = document.getElementById('namaGabunganInput').value;
-    let kodeRumahVal = document.getElementById('kodeRumah').value;
-    let namaWargaOnly = namaGabunganVal;
-    
-    // Pisahkan nama warga bersih jika formatnya "Kode - Nama"
-    if (kodeRumahVal && namaGabunganVal.startsWith(kodeRumahVal)) {
-      namaWargaOnly = namaGabunganVal.replace(kodeRumahVal, '').replace(/^[\s\-_]+/, '').trim();
-    }
-
     let payload = {
       action: action,
       rowId: rowId ? parseInt(rowId) : null,
       tanggal: document.getElementById('tanggal').value,
-      kodeRumah: kodeRumahVal,
-      nama: namaWargaOnly,
+      namaGabungan: document.getElementById('namaGabunganInput').value,
       bulanList: bulanList,
       jumlahBulan: parseInt(document.getElementById('jumlahBulan').value) || 0,
-      iuranBulan: NOMINAL_PER_BULAN,
-      nominalSeharusnya: (parseInt(document.getElementById('jumlahBulan').value) || 0) * NOMINAL_PER_BULAN,
       nominalDiterima: parseFloat(document.getElementById('nominalDiterima').value) || 0,
       diterimaOleh: document.getElementById('diterimaOleh').value,
       keterangan: document.getElementById('keterangan').value
@@ -629,7 +560,7 @@
     .catch(err => {
       btnSubmit.disabled = false;
       btnSubmit.textContent = 'Simpan Transaksi';
-      tampilkanToast('Kesalahan koneksi: ' + err.message, true);
+      tampilkanToast('Koneksi gagal: ' + err.message, true);
     });
   }
 
@@ -638,7 +569,7 @@
     if (!t) return;
 
     bukaFormTambah();
-    document.getElementById('form-title').textContent = 'Edit Transaksi Pembayaran (Baris ' + rowId + ')';
+    document.getElementById('form-title').textContent = 'Edit Transaksi (Baris ' + rowId + ')';
     document.getElementById('action').value = 'update';
     document.getElementById('rowId').value = rowId;
 
@@ -647,10 +578,8 @@
       document.getElementById('tanggal').value = d.toISOString().split('T')[0];
     }
     
-    let fullNamaGabung = (t.kodeRumah && t.nama) ? (t.kodeRumah + ' - ' + t.nama) : t.nama;
-    document.getElementById('kodeRumah').value = t.kodeRumah || '';
-    document.getElementById('namaGabunganInput').value = fullNamaGabung;
-    deteksiDataWarga(fullNamaGabung);
+    document.getElementById('namaGabunganInput').value = t.namaGabungan || '';
+    deteksiDataWarga(t.namaGabungan || '');
 
     document.getElementById('diterimaOleh').value = t.diterimaOleh || '';
     document.getElementById('nominalDiterima').value = t.nominalDiterima || '';
@@ -673,16 +602,11 @@
   }
 
   function hapusData(rowId) {
-    if (!confirm('Apakah Anda yakin ingin menghapus data transaksi baris ke-' + rowId + ' ini?')) return;
-
-    let payload = {
-      action: 'delete',
-      rowId: rowId
-    };
+    if (!confirm('Yakin ingin menghapus data transaksi baris ' + rowId + '?')) return;
 
     fetch(WEB_APP_URL, {
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ action: 'delete', rowId: rowId })
     })
     .then(res => res.json())
     .then(result => {
@@ -690,12 +614,10 @@
         tampilkanToast(result.message);
         muatData();
       } else {
-        tampilkanToast('Gagal menghapus: ' + result.message, true);
+        tampilkanToast('Gagal hapus: ' + result.message, true);
       }
     })
-    .catch(err => {
-      tampilkanToast('Kesalahan koneksi: ' + err.message, true);
-    });
+    .catch(err => tampilkanToast('Koneksi gagal', true));
   }
 </script>
 </body>
