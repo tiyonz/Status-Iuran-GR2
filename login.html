@@ -120,7 +120,7 @@
   // Jika sudah tersimpan URL sebelumnya (localStorage), langsung lempar ke input.html.
   (function cekSesiAwal() {
     const tersimpan = localStorage.getItem(STORAGE_KEY);
-    if (tersimpan) window.location.replace('input.html');
+    if (tersimpan) window.location.replace('transaksi/input.html');
   })();
 
   function tampilkanError(pesan) {
@@ -160,7 +160,7 @@
           } else {
             sessionStorage.setItem(STORAGE_KEY, url);
           }
-          window.location.replace('input.html');
+          window.location.replace('transaksi/input.html');
         } else {
           tampilkanError('URL terhubung tapi responsnya tidak sesuai. Pastikan Code.gs ter-deploy dengan benar.');
         }
