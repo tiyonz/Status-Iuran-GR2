@@ -1,91 +1,221 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Transaksi Iuran Warga</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 2rem 1rem; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: var(--card-bg); width: 100%; max-width: 500px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); }
-        h2 { margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; }
-        input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.875rem; }
-        button { width: 100%; background-color: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 1rem; }
-        button:hover { background-color: var(--primary-dark); }
-        .back-link { display: block; text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Input Transaksi — Gaharu Residence II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1F3D2E;
+    --forest-deep:#13251C;
+    --brass:#B8935A;
+    --brass-light:#D9BE8E;
+    --ivory:#F6F2E8;
+    --paper:#FFFEFB;
+    --line:#E2DBC8;
+    --ink:#20291F;
+    --ink-muted:#5C6A57;
+    --success:#2F6B4F;
+    --success-bg:#E6EFE7;
+    --danger:#A6472B;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--ivory);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+  }
+
+  .card-container{
+    width:100%;
+    max-width:520px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 12px 28px -18px rgba(19,37,28,0.35);
+    overflow:hidden;
+  }
+
+  .card-header{
+    background:var(--forest-deep);
+    color:var(--ivory);
+    padding:24px;
+    border-bottom:2px solid var(--brass);
+  }
+  .card-header h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:20px;
+    letter-spacing:-0.01em;
+  }
+  .card-header p{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:12.5px;
+    color:var(--brass-light);
+    margin-top:4px;
+  }
+
+  .card-body{
+    padding:24px;
+  }
+
+  .form-group{
+    margin-bottom:16px;
+  }
+  label{
+    display:block;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--forest-deep);
+    margin-bottom:6px;
+  }
+  input, select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    font-size:13.5px;
+    font-family:'Inter',sans-serif;
+    background:var(--ivory);
+    color:var(--ink);
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--brass);
+    background:var(--paper);
+  }
+
+  .btn-submit{
+    width:100%;
+    background:var(--forest);
+    color:var(--ivory);
+    border:none;
+    padding:12px;
+    border-radius:6px;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    margin-top:8px;
+    transition:background .15s ease;
+  }
+  .btn-submit:hover{
+    background:var(--forest-deep);
+  }
+
+  .back-link{
+    display:block;
+    text-align:center;
+    margin-top:16px;
+    font-size:12.5px;
+    color:var(--ink-muted);
+    text-decoration:none;
+  }
+  .back-link:hover{
+    color:var(--forest-deep);
+    text-decoration:underline;
+  }
+
+  .alert-box{
+    padding:12px;
+    border-radius:6px;
+    font-size:12.5px;
+    margin-bottom:16px;
+    display:none;
+  }
+  .alert-box.success{background:var(--success-bg);color:var(--success);border:1px solid rgba(47,107,79,0.3);}
+  .alert-box.error{background:#F4E5DD;color:var(--danger);border:1px solid rgba(166,71,43,0.3);}
+</style>
 </head>
 <body>
-    <div class="card">
-        <h2><i class="fa-solid fa-pen-to-square"></i> Form Input Iuran Warga</h2>
-        <form id="inputForm">
-            <div class="form-group">
-                <label for="nama">Nama Warga</label>
-                <input type="text" id="nama" required placeholder="Contoh: Budi Santoso">
-            </div>
-            <div class="form-group">
-                <label for="blok">Blok / Nomor Rumah</label>
-                <input type="text" id="blok" required placeholder="Contoh: Blok A No. 12">
-            </div>
-            <div class="form-group">
-                <label for="nominal">Nominal Pembayaran (Rp)</label>
-                <input type="number" id="nominal" required placeholder="Contoh: 50000">
-            </div>
-            <button type="submit" id="submitBtn"><i class="fa-solid fa-floppy-disk"></i> Simpan Data</button>
-        </form>
-        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
+
+  <div class="card-container">
+    <div class="card-header">
+      <h1>Gaharu Residence II</h1>
+      <p>Form Pengurus — Input / Catat Pembayaran Iuran Warga</p>
     </div>
+    <div class="card-body">
+      <div id="alertBox" class="alert-box"></div>
 
-    <script>
-        const WEB_APP_URL = "MASUKKAN_URL_WEB_APP_ANDA_DISINI";
+      <form id="inputForm">
+        <div class="form-group">
+          <label for="nama">Nama Warga / Penghuni</label>
+          <input type="text" id="nama" required placeholder="Contoh: Budi Santoso">
+        </div>
+        <div class="form-group">
+          <label for="blok">Blok &amp; No. Rumah</label>
+          <input type="text" id="blok" required placeholder="Contoh: Blok A No. 12">
+        </div>
+        <div class="form-group">
+          <label for="nominal">Nominal Pembayaran (Rp)</label>
+          <input type="number" id="nominal" required value="40000" placeholder="40000">
+        </div>
+        <div class="form-group">
+          <label for="keterangan">Keterangan Bulan / Catatan</label>
+          <input type="text" id="keterangan" placeholder="Contoh: Iuran Bulan Juni 2026">
+        </div>
+        
+        <button type="submit" id="submitBtn" class="btn-submit">Simpan &amp; Kirim ke Sistem</button>
+      </form>
 
-        document.getElementById('inputForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('submitBtn');
-            btn.innerHTML = 'Menyimpan...';
-            btn.disabled = true;
+      <a href="index.html" class="back-link">← Kembali ke Dashboard Utama</a>
+    </div>
+  </div>
 
-            // Sesuaikan susunan array data dengan kolom spreadsheet Anda
-            const payload = [
-                document.getElementById('nama').value,
-                document.getElementById('blok').value,
-                document.getElementById('nominal').value
-                // Tambahkan data kolom lain jika diperlukan
-            ];
+  <script>
+    // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI:
+    const WEB_APP_URL = "MASUKKAN_URL_WEB_APP_ANDA_DISINI";
 
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(result => {
-                alert(result.message);
-                document.getElementById('inputForm').reset();
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Data';
-                btn.disabled = false;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menyimpan data.');
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Data';
-                btn.disabled = false;
-            });
-        });
-    </script>
+    document.getElementById('inputForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      const alertBox = document.getElementById('alertBox');
+      
+      btn.textContent = 'Menyimpan data...';
+      btn.disabled = true;
+      alertBox.style.display = 'none';
+
+      const payload = [
+        document.getElementById('blok').value,
+        document.getElementById('nama').value,
+        document.getElementById('nominal').value,
+        document.getElementById('keterangan').value
+      ];
+
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(result => {
+        alertBox.className = 'alert-box success';
+        alertBox.textContent = result.message || 'Data berhasil disimpan ke sistem!';
+        alertBox.style.display = 'block';
+        document.getElementById('inputForm').reset();
+        document.getElementById('nominal').value = '40000';
+        btn.textContent = 'Simpan & Kirim ke Sistem';
+        btn.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alertBox.className = 'alert-box error';
+        alertBox.textContent = 'Gagal menyimpan data. Periksa kembali URL Web App Apps Script Anda.';
+        alertBox.style.display = 'block';
+        btn.textContent = 'Simpan & Kirim ke Sistem';
+        btn.disabled = false;
+      });
+    });
+  </script>
 </body>
 </html>
