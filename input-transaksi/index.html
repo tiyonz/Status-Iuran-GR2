@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gaharu Residence II — Input & Kelola Transaksi Iuran</title>
+<title>Gaharu Residence II — Kelola & Input Transaksi Iuran</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
     --success-bg:#E6EFE7;
     --danger:#A6472B;
     --danger-bg:#F4E5DD;
+    --warning-bg:#FFF3CD;
     --sidebar-w:270px;
   }
 
@@ -37,9 +38,82 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  .layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh;}
+  /* ================= HALAMAN LOGIN URL WEB APP ================= */
+  #login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: radial-gradient(circle at 50% 30%, rgba(184,147,90,0.15), transparent 60%), var(--ivory);
+  }
+  .login-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 36px 30px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 40px -15px rgba(19,37,28,0.2);
+    text-align: center;
+  }
+  .login-card h2 {
+    font-family:'Fraunces',serif;
+    font-size: 24px;
+    color: var(--forest-deep);
+    margin-bottom: 8px;
+  }
+  .login-card p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .login-card .form-group {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+  .login-card label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .login-card input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    background: var(--paper-tint);
+    color: var(--ink);
+  }
+  .login-card input:focus {
+    outline: none;
+    border-color: var(--brass);
+    background: var(--paper);
+  }
+  .login-card button {
+    width: 100%;
+    background: var(--forest);
+    color: var(--ivory);
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: background .15s;
+    margin-top: 6px;
+  }
+  .login-card button:hover { background: var(--forest-deep); }
 
-  /* ================= SIDEBAR ================= */
+  /* ================= DASHBOARD UTAMA ================= */
+  #main-dashboard { display: none; }
+  .layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
+
   aside.sidebar{
     background:radial-gradient(ellipse at 20% 0%, rgba(184,147,90,0.10), transparent 55%), var(--forest-deep);
     color:var(--ivory);
@@ -64,18 +138,16 @@
   .sb-stats{display:flex;flex-direction:column;}
   .sb-stats .row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
   .sb-stats .row:last-child{border-bottom:none;}
-  .sb-stats .row .num{font-family:'Fraunces',serif;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;}
-  .sb-stats .row .label{font-size:11.5px;color:rgba(246,242,232,0.65);}
+  .sb-link{color:var(--brass-light);text-decoration:none;font-size:12.5px;font-weight:500;display:block;padding:4px 0;cursor:pointer;}
+  .sb-link:hover{color:#fff;}
 
   .sb-footnote{font-size:11px;color:rgba(246,242,232,0.5);line-height:1.6;font-style:italic;}
-
   .hamburger-btn{
     background:none;border:1px solid rgba(216,189,140,0.4);border-radius:6px;
     width:34px;height:34px;display:flex;align-items:center;justify-content:center;
-    color:var(--brass-light);flex-shrink:0;
+    color:var(--brass-light);flex-shrink:0;cursor:pointer;
   }
 
-  /* ================= MOBILE TOPBAR & DRAWER ================= */
   .mobile-topbar{
     display:none;position:sticky;top:0;z-index:200;align-items:center;gap:12px;
     padding:11px 16px;background:var(--forest-deep);color:var(--ivory);
@@ -86,7 +158,6 @@
   .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,25,18,0.5);z-index:299;}
   .sidebar-overlay.open{display:block;}
 
-  /* ================= MAIN ================= */
   main{padding:32px 36px 60px;}
 
   .content-head{margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;}
@@ -100,7 +171,7 @@
   }
   .btn-primary:hover{background:var(--forest-deep);}
 
-  /* ---- Form Card (Panel Input Transaksi) ---- */
+  /* Form Card */
   .form-card{
     background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:24px;
     margin-bottom:28px;box-shadow:0 12px 28px -18px rgba(19,37,28,0.35);display:none;
@@ -117,7 +188,6 @@
   }
   .form-control:focus{outline:none;border-color:var(--brass);}
 
-  /* Checkbox bulan */
   .bulan-container{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px;}
   .bulan-checkbox{
     border:1px solid var(--line);border-radius:6px;padding:8px 4px;text-align:center;font-size:12px;
@@ -133,7 +203,7 @@
   }
   .btn-secondary:hover{background:var(--paper-hover);color:var(--ink);}
 
-  /* ---- Controls & Table ---- */
+  /* Controls & Table */
   .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px;}
   .search-box{position:relative;min-width:240px;max-width:320px;flex:1;}
   .search-box input{
@@ -173,7 +243,6 @@
     font-size:11px;color:var(--ink-muted);background:var(--ivory);border-top:1px solid var(--line);
   }
 
-  /* Notifikasi Toast */
   #toast{
     position:fixed;bottom:24px;right:24px;background:var(--forest-deep);color:var(--ivory);
     padding:12px 20px;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);z-index:1000;
@@ -181,10 +250,9 @@
   }
   #toast.show{transform:translateY(0);opacity:1;}
 
-  /* ================= Responsive ================= */
   @media (max-width:880px){
     .mobile-topbar{display:flex;}
-    .layout{display:block;}
+    .layout{display:grid;grid-template-columns:1fr;}
     aside.sidebar{position:fixed;top:0;left:0;width:86vw;max-width:300px;height:100vh;transform:translateX(-100%);transition:transform .28s ease;z-index:300;box-shadow:12px 0 30px -12px rgba(0,0,0,0.4);}
     aside.sidebar.open{transform:translateX(0);}
     #sidebar-close-btn{display:flex !important;}
@@ -195,159 +263,164 @@
 </head>
 <body>
 
-<!-- ============ MOBILE TOPBAR ============ -->
-<div class="mobile-topbar">
-  <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Buka menu">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <div>
-    <div class="mt-title">Gaharu Residence II</div>
-    <div class="mt-sub">Kelola Transaksi Iuran Warga</div>
+<div id="login-wrapper">
+  <div class="login-card">
+    <h2>🔐 Panel Pengurus</h2>
+    <p>Masukkan URL Web App (Google Apps Script) Anda sebagai kunci akses sistem pencatatan iuran.</p>
+    <div class="form-group">
+      <label for="input-url">URL Web App (exec):</label>
+      <input type="text" id="input-url" placeholder="https://script.google.com/macros/s/.../exec">
+    </div>
+    <button onclick="masukSistem()">Hubungkan &amp; Masuk</button>
   </div>
 </div>
 
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div id="main-dashboard">
 
-<div class="layout">
+  <div class="mobile-topbar">
+    <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Buka menu">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div>
+      <div class="mt-title">Gaharu Residence II</div>
+      <div class="mt-sub">Kelola Transaksi Iuran Warga</div>
+    </div>
+  </div>
 
-  <!-- ============ SIDEBAR ============ -->
-  <aside class="sidebar" id="sidebar">
-    <div class="mark">
-      <div class="mark-left">
-        <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
-          <path d="M17 3C17 3 9 9 9 18C9 24 12.5 28 17 30C21.5 28 25 24 25 18C25 9 17 3 17 3Z" stroke="#D9BE8E" stroke-width="1.3"/>
-          <path d="M17 8V27" stroke="#B8935A" stroke-width="1.1"/>
-          <path d="M17 13C17 13 13.5 14.5 13 18" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
-          <path d="M17 17C17 17 20.5 18.5 21 22" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
-        </svg>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="mark">
+        <div class="mark-left">
+          <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
+            <path d="M17 3C17 3 9 9 9 18C9 24 12.5 28 17 30C21.5 28 25 24 25 18C25 9 17 3 17 3Z" stroke="#D9BE8E" stroke-width="1.3"/>
+            <path d="M17 8V27" stroke="#B8935A" stroke-width="1.1"/>
+            <path d="M17 13C17 13 13.5 14.5 13 18" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
+            <path d="M17 17C17 17 20.5 18.5 21 22" stroke="#D9BE8E" stroke-width="0.9" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h1>Gaharu Residence II</h1>
+            <p>Admin &amp; Input Transaksi</p>
+          </div>
+        </div>
+        <button onclick="toggleSidebar()" class="hamburger-btn" style="display:none;" id="sidebar-close-btn" aria-label="Tutup menu">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <span class="periode-tag">Periode Aktif</span>
+      <hr class="sb-divider">
+
+      <div class="sb-section">
+        <h2>Menu Navigasi</h2>
+        <div class="sb-stats">
+          <div class="row"><a class="sb-link" onclick="bukaFormTambah(); return false;">+ Catat Pembayaran Baru</a></div>
+          <div class="row"><a class="sb-link" onclick="muatData(); return false;">🔄 Refresh / Muat Ulang Data</a></div>
+          <div class="row"><a class="sb-link" style="color:var(--danger);" onclick="keluarSistem(); return false;">🚪 Ganti URL Web App</a></div>
+        </div>
+      </div>
+
+      <hr class="sb-divider">
+      <p class="sb-footnote">Data transaksi terhubung langsung secara real-time ke spreadsheet database perumahan.</p>
+    </aside>
+
+    <main>
+      <div class="content-head">
         <div>
-          <h1>Gaharu Residence II</h1>
-          <p>Panel Input &amp; Administrasi Iuran Warga</p>
+          <h2>Pencatatan &amp; Manajemen Iuran</h2>
+          <span>Input, ubah, atau hapus data pembayaran iuran warga.</span>
+        </div>
+        <button class="btn-primary" onclick="bukaFormTambah()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Catat Transaksi Baru
+        </button>
+      </div>
+
+      <div class="form-card" id="form-card">
+        <h3 id="form-title">Form Pencatatan Transaksi Baru</h3>
+        <form id="transaksi-form" onsubmit="simpanData(event)">
+          <input type="hidden" id="rowId" name="rowId">
+          <input type="hidden" id="action" name="action" value="insert">
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="tanggal">Tanggal Bayar</label>
+              <input type="date" id="tanggal" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="kodeRumah">Kode Rumah</label>
+              <input type="text" id="kodeRumah" class="form-control" placeholder="Contoh: A-12">
+            </div>
+            <div class="form-group">
+              <label for="nama">No Rumah + Penghuni (Warga)</label>
+              <select id="nama" class="form-control" required>
+                <option value="">Memuat data warga...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="diterimaOleh">Diterima Oleh (Petugas)</label>
+              <select id="diterimaOleh" class="form-control" required>
+                <option value="">Memuat data petugas...</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:14px;">
+            <label>Pilih Bulan yang Dibayar:</label>
+            <div class="bulan-container" id="bulan-container"></div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="jumlahBulan">Jumlah Bulan</label>
+              <input type="number" id="jumlahBulan" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label for="iuranBulan">Iuran per Bulan (Rp)</label>
+              <input type="number" id="iuranBulan" class="form-control" placeholder="Contoh: 40000" oninput="hitungTotal()">
+            </div>
+            <div class="form-group">
+              <label for="nominalDiterima">Total Nominal Diterima (Rp)</label>
+              <input type="number" id="nominalDiterima" class="form-control" placeholder="Nominal uang diterima" required>
+            </div>
+            <div class="form-group">
+              <label for="keterangan">Keterangan / Catatan</label>
+              <input type="text" id="keterangan" class="form-control" placeholder="Opsional">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="tutupForm()">Batal</button>
+            <button type="submit" class="btn-primary" id="btn-submit">Simpan Transaksi</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="controls">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" placeholder="Cari warga atau kode rumah..." oninput="renderTabel()">
         </div>
       </div>
-      <button onclick="toggleSidebar()" class="hamburger-btn" style="display:none;" id="sidebar-close-btn" aria-label="Tutup menu">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
 
-    <span class="periode-tag">Periode 2026</span>
-    <hr class="sb-divider">
-
-    <div class="sb-section">
-      <h2>Menu Cepat</h2>
-      <div class="sb-stats">
-        <div class="row"><a href="#" onclick="bukaFormTambah(); return false;" style="color:var(--brass-light); text-decoration:none; font-weight:600; padding:4px 0;">+ Catat Pembayaran Baru</a></div>
-        <div class="row"><a href="#" onclick="muatData(); return false;" style="color:rgba(246,242,232,0.8); text-decoration:none; padding:4px 0;">🔄 Refresh Data</a></div>
-      </div>
-    </div>
-
-    <hr class="sb-divider">
-    <p class="sb-footnote">Gunakan panel ini untuk memasukkan, mengubah, atau menghapus data transaksi langsung ke database Google Sheets.</p>
-  </aside>
-
-  <!-- ============ MAIN ============ -->
-  <main>
-
-    <div class="content-head">
-      <div>
-        <h2>Kelola Transaksi Pembayaran</h2>
-        <span>Input data pembayaran iuran warga terhubung langsung ke Google Sheets.</span>
-      </div>
-      <button class="btn-primary" onclick="bukaFormTambah()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Catat Transaksi Baru
-      </button>
-    </div>
-
-    <!-- Form Input / Edit Card -->
-    <div class="form-card" id="form-card">
-      <h3 id="form-title">Form Pencatatan Transaksi Baru</h3>
-      <form id="transaksi-form" onsubmit="simpanData(event)">
-        <input type="hidden" id="rowId" name="rowId">
-        <input type="hidden" id="action" name="action" value="insert">
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="tanggal">Tanggal Bayar</label>
-            <input type="date" id="tanggal" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label for="kodeRumah">No. Rumah / Blok</label>
-            <input type="text" id="kodeRumah" class="form-control" placeholder="Contoh: A-01" required>
-          </div>
-          <div class="form-group">
-            <label for="nama">Nama Warga</label>
-            <input type="text" id="nama" class="form-control" list="list-warga" placeholder="Pilih atau ketik nama..." required>
-            <datalist id="list-warga"></datalist>
-          </div>
-          <div class="form-group">
-            <label for="diterimaOleh">Diterima Oleh (Petugas)</label>
-            <select id="diterimaOleh" class="form-control" required>
-              <option value="">Pilih Petugas...</option>
-            </select>
-          </div>
+      <div class="ledger-card">
+        <div class="table-scroll">
+          <div id="tabel-container" class="loading-state">Menghubungkan ke server...</div>
         </div>
-
-        <div class="form-group" style="margin-bottom:14px;">
-          <label>Pilih Bulan yang Dibayar:</label>
-          <div class="bulan-container" id="bulan-container">
-            <!-- Checkbox bulan dibentuk dinamis -->
-          </div>
+        <div class="meta-row">
+          <span id="jumlah-tampil">Menampilkan 0 data</span>
+          <span id="waktu-muat">Sinkronisasi siap</span>
         </div>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="jumlahBulan">Jumlah Bulan</label>
-            <input type="number" id="jumlahBulan" class="form-control" readonly>
-          </div>
-          <div class="form-group">
-            <label for="nominalDiterima">Total Nominal Diterima (Rp)</label>
-            <input type="number" id="nominalDiterima" class="form-control" placeholder="Otomatis / Manual" required>
-          </div>
-          <div class="form-group" style="grid-column: span 2;">
-            <label for="keterangan">Keterangan / Catatan</label>
-            <input type="text" id="keterangan" class="form-control" placeholder="Opsional (misal: Transfer via BCA)">
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-secondary" onclick="tutupForm()">Batal</button>
-          <button type="submit" class="btn-primary" id="btn-submit">Simpan Transaksi</button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Search & Filter Controls -->
-    <div class="controls">
-      <div class="search-box">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="search-input" placeholder="Cari berdasarkan nama atau no rumah..." oninput="renderTabel()">
       </div>
-    </div>
-
-    <!-- Tabel Data Transaksi -->
-    <div class="ledger-card">
-      <div class="table-scroll">
-        <div id="tabel-container" class="loading-state">Menghubungkan ke Google Apps Script...</div>
-      </div>
-      <div class="meta-row">
-        <span id="jumlah-tampil">Menampilkan 0 data</span>
-        <span id="waktu-muat">Sinkronisasi siap</span>
-      </div>
-    </div>
-
-  </main>
+    </main>
+  </div>
 </div>
 
 <div id="toast">Notifikasi berhasil</div>
 
 <script>
-  // =========================================================================
-  // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-  // =========================================================================
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzT64yC11aH-Kx-51qB2m30W61n0tJk1lY2m3N4o5P6q7R8s9T0u1V2w3X4y5Z6/exec'; // <-- MASUKKAN URL WEB APP ANDA
-  const NOMINAL_PER_BULAN = 40000;
-
+  let WEB_APP_URL = localStorage.getItem("saved_webapp_url") || "";
   let globalDataWarga = [];
   let globalDataTransaksi = [];
   let globalDataPetugas = [];
@@ -355,9 +428,28 @@
 
   document.addEventListener("DOMContentLoaded", function() {
     inisialisasiFormBulan();
-    muatData();
-    document.getElementById('tanggal').valueAsDate = new Date();
+    if (WEB_APP_URL) {
+      document.getElementById('input-url').value = WEB_APP_URL;
+      masukSistem();
+    }
   });
+
+  function masukSistem() {
+    let urlInput = document.getElementById('input-url').value.trim();
+    if (!urlInput) {
+      alert('Mohon masukkan URL Web App terlebih dahulu!');
+      return;
+    }
+    WEB_APP_URL = urlInput;
+    localStorage.setItem("saved_webapp_url", WEB_APP_URL);
+    muatData();
+  }
+
+  function keluarSistem() {
+    localStorage.removeItem("saved_webapp_url");
+    document.getElementById('login-wrapper').style.display = 'flex';
+    document.getElementById('main-dashboard').style.display = 'none';
+  }
 
   function inisialisasiFormBulan() {
     let container = document.getElementById('bulan-container');
@@ -370,17 +462,25 @@
         let chk = this.querySelector('input');
         chk.checked = !chk.checked;
         this.classList.toggle('checked', chk.checked);
-        hitungOtomatisNominal();
+        hitungOtomatisJumlahBulan();
       };
       container.appendChild(div);
     });
   }
 
-  function hitungOtomatisNominal() {
+  function hitungOtomatisJumlahBulan() {
     let checkedBulan = document.querySelectorAll('input[name="bulan"]:checked');
     let jumlah = checkedBulan.length;
     document.getElementById('jumlahBulan').value = jumlah;
-    document.getElementById('nominalDiterima').value = jumlah * NOMINAL_PER_BULAN;
+    hitungTotal();
+  }
+
+  function hitungTotal() {
+    let jmlBulan = parseFloat(document.getElementById('jumlahBulan').value) || 0;
+    let iuran = parseFloat(document.getElementById('iuranBulan').value) || 0;
+    if (iuran > 0) {
+      document.getElementById('nominalDiterima').value = jmlBulan * iuran;
+    }
   }
 
   function toggleSidebar() {
@@ -397,7 +497,6 @@
     setTimeout(() => toast.classList.remove('show'), 3500);
   }
 
-  // ================= FETCH DATA DARI APPS SCRIPT =================
   function muatData() {
     let container = document.getElementById('tabel-container');
     container.className = 'loading-state';
@@ -409,13 +508,18 @@
         return res.json();
       })
       .then(data => {
+        document.getElementById('login-wrapper').style.display = 'none';
+        document.getElementById('main-dashboard').style.display = 'block';
+        document.getElementById('tanggal').valueAsDate = new Date();
+
         globalDataWarga = data.warga || [];
         globalDataTransaksi = data.transaksi || [];
         globalDataPetugas = data.petugas || [];
 
-        // Populate Datalist Warga
-        let dlWarga = document.getElementById('list-warga');
-        dlWarga.innerHTML = globalDataWarga.map(w => `<option value="${w}">`).join('');
+        // Populate Select Warga
+        let selWarga = document.getElementById('nama');
+        selWarga.innerHTML = '<option value="">Pilih Warga...</option>' + 
+          globalDataWarga.map(w => `<option value="${w}">${w}</option>`).join('');
 
         // Populate Select Petugas
         let selPetugas = document.getElementById('diterimaOleh');
@@ -423,15 +527,15 @@
           globalDataPetugas.map(p => `<option value="${p}">${p}</option>`).join('');
 
         renderTabel();
-        document.getElementById('waktu-muat').textContent = 'Terakhir diperbarui: ' + new Date().toLocaleTimeString('id-ID');
+        document.getElementById('waktu-muat').textContent = 'Sinkronisasi: ' + new Date().toLocaleTimeString('id-ID');
       })
       .catch(err => {
-        container.className = 'error-state';
-        container.innerHTML = `⚠️ <b>Gagal memuat data</b><br><br>${err.message}<br><br>Pastikan URL Apps Script sudah benar & di-deploy sebagai Web App.`;
+        document.getElementById('login-wrapper').style.display = 'flex';
+        document.getElementById('main-dashboard').style.display = 'none';
+        alert('Gagal terhubung! Pastikan URL Web App Anda benar.\nError: ' + err.message);
       });
   }
 
-  // ================= RENDER TABEL TRANSAKSI =================
   function renderTabel() {
     let keyword = (document.getElementById('search-input').value || '').toLowerCase();
     let container = document.getElementById('tabel-container');
@@ -443,7 +547,7 @@
     });
 
     if (filtered.length === 0) {
-      container.innerHTML = `<div class="loading-state">Tidak ada data transaksi yang ditemukan.</div>`;
+      container.innerHTML = `<div class="loading-state">Tidak ada data transaksi ditemukan.</div>`;
       document.getElementById('jumlah-tampil').textContent = 'Menampilkan 0 data';
       return;
     }
@@ -451,13 +555,16 @@
     let html = `<table><thead><tr>
       <th>Aksi</th>
       <th>Tanggal</th>
-      <th>No. Rumah</th>
-      <th>Nama Warga</th>
+      <th>Kode Rumah</th>
+      <th>No Rumah + Penghuni</th>
+      <th>Belum Bayar</th>
       <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Mei</th><th>Jun</th>
       <th>Jul</th><th>Agu</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Des</th>
       <th>Jml Bln</th>
+      <th>Iuran/Bln</th>
+      <th>Nominal Seharusnya</th>
       <th>Nominal Diterima</th>
-      <th>Petugas</th>
+      <th>Diterima Oleh</th>
       <th>Keterangan</th>
     </tr></thead><tbody>`;
 
@@ -473,21 +580,21 @@
         </td>
         <td>${tglFormatted}</td>
         <td><b>${t.kodeRumah || ''}</b></td>
-        <td>${t.nama || ''}</td>`;
+        <td>${t.nama || ''}</td>
+        <td>${t.belumBayar || ''}</td>`;
 
-      // Kolom Bulan (12 bulan)
       if (t.bulanArray) {
         t.bulanArray.forEach(bStatus => {
-          let badge = bStatus ? `<span style="color:var(--success); font-weight:700;">✔</span>` : `<span style="color:#B7AF9E;">—</span>`;
+          let badge = bStatus ? `<span style="color:var(--success); font-weight:700;">✔</span>` : `<span style="color:#CFC5B1;">—</span>`;
           html += `<td style="text-align:center;">${badge}</td>`;
         });
       }
 
-      let nominalRp = 'Rp' + Number(t.nominalDiterima || 0).toLocaleString('id-ID');
-
       html += `
         <td style="text-align:center;"><b>${t.jumlahBulan || 0}</b></td>
-        <td><b>${nominalRp}</b></td>
+        <td>Rp ${Number(t.iuranBulan || 0).toLocaleString('id-ID')}</td>
+        <td>Rp ${Number(t.nominalSeharusnya || 0).toLocaleString('id-ID')}</td>
+        <td><b>Rp ${Number(t.nominalDiterima || 0).toLocaleString('id-ID')}</b></td>
         <td>${t.diterimaOleh || ''}</td>
         <td>${t.keterangan || ''}</td>
       </tr>`;
@@ -498,7 +605,6 @@
     document.getElementById('jumlah-tampil').textContent = `Menampilkan ${filtered.length} transaksi`;
   }
 
-  // ================= FORM UTILITY =================
   function bukaFormTambah() {
     document.getElementById('form-card').classList.add('open');
     document.getElementById('form-title').textContent = 'Form Pencatatan Transaksi Baru';
@@ -521,7 +627,6 @@
     });
   }
 
-  // ================= SIMPAN / EDIT / HAPUS DATA =================
   function simpanData(e) {
     e.preventDefault();
     let action = document.getElementById('action').value;
@@ -540,8 +645,8 @@
       nama: document.getElementById('nama').value,
       bulanList: bulanList,
       jumlahBulan: parseInt(document.getElementById('jumlahBulan').value) || 0,
-      iuranBulan: NOMINAL_PER_BULAN,
-      nominalSeharusnya: (parseInt(document.getElementById('jumlahBulan').value) || 0) * NOMINAL_PER_BULAN,
+      iuranBulan: parseFloat(document.getElementById('iuranBulan').value) || 0,
+      nominalSeharusnya: parseFloat(document.getElementById('nominalSeharusnya').value) || 0,
       nominalDiterima: parseFloat(document.getElementById('nominalDiterima').value) || 0,
       diterimaOleh: document.getElementById('diterimaOleh').value,
       keterangan: document.getElementById('keterangan').value
@@ -589,11 +694,12 @@
     }
     document.getElementById('kodeRumah').value = t.kodeRumah || '';
     document.getElementById('nama').value = t.nama || '';
-    document.getElementById('diterimaOleh').value = t.diterimaOleh || '';
+    document.getElementById('jumlahBulan').value = t.jumlahBulan || '';
+    document.getElementById('iuranBulan').value = t.iuranBulan || '';
     document.getElementById('nominalDiterima').value = t.nominalDiterima || '';
+    document.getElementById('diterimaOleh').value = t.diterimaOleh || '';
     document.getElementById('keterangan').value = t.keterangan || '';
 
-    // Set checkboxes bulan
     resetCheckboxes();
     if (t.bulanArray) {
       t.bulanArray.forEach((bStatus, idx) => {
@@ -607,16 +713,13 @@
         }
       });
     }
-    hitungOtomatisNominal();
+    hitungTotal();
   }
 
   function hapusData(rowId) {
-    if (!confirm('Apakah Anda yakin ingin menghapus data transaksi baris ke-' + rowId + ' ini?')) return;
+    if (!confirm('Apakah Anda yakin ingin menghapus baris data transaksi ke-' + rowId + ' ini dari spreadsheet?')) return;
 
-    let payload = {
-      action: 'delete',
-      rowId: rowId
-    };
+    let payload = { action: 'delete', rowId: rowId };
 
     fetch(WEB_APP_URL, {
       method: 'POST',
