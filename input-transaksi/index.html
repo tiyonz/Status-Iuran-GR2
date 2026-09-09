@@ -31,11 +31,13 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    padding:24px 16px;
+    padding:32px 16px;
+  }
+  .main-wrapper{
+    width:100%;max-width:850px;
+    display:flex;flex-direction:column;gap:24px;
   }
   .card-container{
-    width:100%;max-width:560px;
     background:var(--paper);border:1px solid var(--line);
     border-radius:12px;box-shadow:0 12px 28px -18px rgba(19,37,28,0.35);overflow:hidden;
   }
@@ -45,16 +47,15 @@
   .card-body{padding:24px;}
   .form-group{margin-bottom:16px;}
   label{display:block;font-size:12.5px;font-weight:600;color:var(--forest-deep);margin-bottom:6px;}
-  input[type="text"], input[type="number"], input[type="password"], select{
+  input, select{
     width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;
     font-size:13.5px;background:var(--ivory);color:var(--ink);
   }
   input:focus, select:focus{outline:none;border-color:var(--brass);background:var(--paper);}
   
-  .bulan-grid{
-    display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;background:var(--ivory);padding:12px;border:1px solid var(--line);border-radius:6px;
+  .info-box{
+    background: #EAF2EE; border: 1px solid var(--success); padding: 10px 12px; border-radius: 6px; font-size: 13px; color: var(--success); margin-bottom: 16px; display:none;
   }
-  .bulan-item{display:flex;align-items:center;gap:6px;font-size:12.5px;cursor:pointer;}
 
   .btn-submit{
     width:100%;background:var(--forest);color:var(--ivory);border:none;padding:12px;
@@ -63,72 +64,104 @@
   .btn-submit:hover{background:var(--forest-deep);}
   .back-link{display:block;text-align:center;margin-top:16px;font-size:12.5px;color:var(--ink-muted);text-decoration:none;}
   .back-link:hover{color:var(--forest-deep);text-decoration:underline;}
+  
   .alert-box{padding:12px;border-radius:6px;font-size:12.5px;margin-bottom:16px;display:none;}
   .alert-box.success{background:var(--success-bg);color:var(--success);border:1px solid rgba(47,107,79,0.3);}
   .alert-box.error{background:#F4E5DD;color:var(--danger);border:1px solid rgba(166,71,43,0.3);}
+
+  /* Tabel Cross Check */
+  .table-container{overflow-x:auto;margin-top:12px;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  th, td{padding:8px 10px;border:1px solid var(--line);text-align:left;}
+  th{background:var(--forest);color:var(--ivory);}
   
-  #formContent { display:none; } /* Terkunci sampai URL Web App dimasukkan dan diverifikasi */
+  #formContent { display:none; }
 </style>
 </head>
 <body>
 
-  <div class="card-container">
-    <div class="card-header">
-      <h1>Gaharu Residence II</h1>
-      <p>Form Pengurus — Verifikasi Akses &amp; Catat Iuran</p>
-    </div>
-    <div class="card-body">
-      <div id="alertBox" class="alert-box"></div>
-
-      <!-- Kotak Verifikasi URL Web App sebagai Pengganti Password -->
-      <div class="form-group" id="authBox">
-        <label for="webAppUrlInput">Masukkan Kunci Akses (URL Web App Apps Script)</label>
-        <div style="display:flex; gap:8px;">
-          <input type="password" id="webAppUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
-          <button type="button" id="unlockBtn" style="background:var(--brass); color:var(--forest-deep); border:none; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer; white-space:nowrap;" onclick="verifikasiAkses()">Buka Akses</button>
-        </div>
-        <p style="font-size:11.5px; color:var(--ink-muted); margin-top:6px; font-style:italic;">Form input baru akan terbuka setelah URL Web App yang valid dimasukkan.</p>
+  <div class="main-wrapper">
+    <div class="card-container">
+      <div class="card-header">
+        <h1>Gaharu Residence II</h1>
+        <p>Form Pengurus — Catat Transaksi &amp; Riwayat Warga</p>
       </div>
+      <div class="card-body">
+        <div id="alertBox" class="alert-box"></div>
 
-      <!-- Form Utama (Akan muncul setelah verifikasi URL berhasil) -->
-      <form id="inputForm" style="display:none;">
-        <div class="form-group">
-          <label for="blok">Blok &amp; No. Rumah</label>
-          <input type="text" id="blok" required placeholder="Contoh: Blok A No. 12">
-        </div>
-        <div class="form-group">
-          <label for="nama">Nama Warga / Penghuni</label>
-          <input type="text" id="nama" list="listWarga" required placeholder="Ketik atau pilih nama warga...">
-          <datalist id="listWarga"></datalist>
-        </div>
-
-        <div class="form-group">
-          <label>Pilih Bulan yang Dibayar (Bisa > 1 bulan)</label>
-          <div class="bulan-grid">
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Januari"> Januari</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Februari"> Februari</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Maret"> Maret</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="April"> April</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Mei"> Mei</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Juni"> Juni</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Juli"> Juli</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Agustus"> Agustus</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="September"> September</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Oktober"> Oktober</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="November"> November</label>
-            <label class="bulan-item"><input type="checkbox" name="bulan" value="Desember"> Desember</label>
+        <!-- Verifikasi Kunci URL Web App -->
+        <div class="form-group" id="authBox">
+          <label for="webAppUrlInput">Masukkan Kunci Akses (URL Web App Apps Script)</label>
+          <div style="display:flex; gap:8px;">
+            <input type="password" id="webAppUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
+            <button type="button" id="unlockBtn" style="background:var(--brass); color:var(--forest-deep); border:none; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer;" onclick="verifikasiAkses()">Buka Akses</button>
           </div>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn-submit">Simpan &amp; Perbarui Checklist</button>
-      </form>
+        <!-- Form Input Utama -->
+        <form id="inputForm" style="display:none;">
+          <div class="form-group">
+            <label for="tanggal">Tanggal Input</label>
+            <input type="date" id="tanggal" required>
+          </div>
 
-      <a href="../index.html" class="back-link">← Kembali ke Dashboard Utama</a>
+          <div class="form-group">
+            <label for="nama">Nama Warga / Penghuni</label>
+            <input type="text" id="nama" list="listWarga" required placeholder="Ketik atau pilih nama warga..." onchange="cekBelumBayar()">
+            <datalist id="listWarga"></datalist>
+          </div>
+
+          <!-- Info Kolom Belum Bayar otomatis dari rumus sheet -->
+          <div id="infoBelumBayar" class="info-box">
+            <strong>Bulan Belum Bayar:</strong> <span id="teksBelumBayar">-</span>
+          </div>
+
+          <div class="form-group">
+            <label for="bulan">Bulan yang Dibayar (Tuliskan, misal: Januari atau Januari, Februari)</label>
+            <input type="text" id="bulan" required placeholder="Contoh: Januari 2026">
+          </div>
+
+          <div class="form-group">
+            <label for="nominal">Nominal (Rp)</label>
+            <input type="number" id="nominal" required value="40000">
+          </div>
+
+          <div class="form-group">
+            <label for="diterimaOleh">Diterima Oleh</label>
+            <select id="diterimaOleh" required>
+              <option value="">-- Pilih Petugas / Pengurus --</option>
+            </select>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-submit">Simpan Transaksi Baru</button>
+        </form>
+
+        <a href="../index.html" class="back-link">← Kembali ke Dashboard Utama</a>
+      </div>
+    </div>
+
+    <!-- Kotak Cross-Check Riwayat Transaksi -->
+    <div class="card-container" id="crossCheckCard" style="display:none;">
+      <div class="card-header" style="background:var(--forest);">
+        <h1>Cross-Check Data Sheet Transaksi</h1>
+        <p>Data mentah terbaru dari spreadsheet untuk pengecekan</p>
+      </div>
+      <div class="card-body">
+        <div class="table-container">
+          <table id="tableCrossCheck">
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     let ACTIVE_WEB_APP_URL = "";
+    let globalDataTransaksi = [];
+
+    // Set tanggal hari ini secara otomatis
+    document.getElementById('tanggal').valueAsDate = new Date();
 
     function verifikasiAkses() {
       const urlInput = document.getElementById('webAppUrlInput').value.trim();
@@ -136,95 +169,136 @@
 
       if (!urlInput.startsWith("https://script.google.com")) {
         alertBox.className = 'alert-box error';
-        alertBox.textContent = 'URL Web App tidak valid! Pastikan formatnya benar.';
+        alertBox.textContent = 'URL Web App tidak valid!';
         alertBox.style.display = 'block';
         return;
       }
 
-      // Tes koneksi ke URL tersebut untuk mengambil data list warga
       document.getElementById('unlockBtn').textContent = 'Memeriksa...';
       
       fetch(urlInput)
         .then(response => response.json())
-        .then(data => {
-          if (!data || data.length === 0) throw new Error('Data kosong');
-          
-          // Jika berhasil diakses, simpan URL dan buka form
+        .then(res => {
           ACTIVE_WEB_APP_URL = urlInput;
+          globalDataTransaksi = res.transaksi;
           
-          // Isi datalist nama warga
+          // 1. Isi Datalist Nama Warga (Asumsi Kolom Nama di indeks 2 / Kolom C)
           const datalist = document.getElementById('listWarga');
           datalist.innerHTML = '';
-          for (let i = 1; i < data.length; i++) {
-            let namaWarga = data[i][2]; // Kolom C: Nama
-            if (namaWarga) {
-              let option = document.createElement('option');
-              option.value = namaWarga;
-              datalist.appendChild(option);
+          for (let i = 1; i < res.transaksi.length; i++) {
+            let nama = res.transaksi[i][2]; 
+            if (nama) {
+              let opt = document.createElement('option');
+              opt.value = nama;
+              datalist.appendChild(opt);
             }
           }
 
-          // Sembunyikan kotak kunci, tampilkan form utama
+          // 2. Isi Dropdown Diterima Oleh dari Sheet Petugas
+          const selectPetugas = document.getElementById('diterimaOleh');
+          selectPetugas.innerHTML = '<option value="">-- Pilih Petugas --</option>';
+          for (let i = 1; i < res.petugas.length; i++) {
+            let petugas = res.petugas[i][0];
+            if(petugas) {
+              let opt = document.createElement('option');
+              opt.value = petugas;
+              opt.textContent = petugas;
+              selectPetugas.appendChild(opt);
+            }
+          }
+
+          // 3. Render Tabel Cross-Check
+          renderTable(res.transaksi);
+
+          // Tampilkan Form & Tabel Cross Check
           document.getElementById('authBox').style.display = 'none';
           document.getElementById('inputForm').style.display = 'block';
+          document.getElementById('crossCheckCard').style.display = 'block';
           alertBox.style.display = 'none';
         })
-        .catch(error => {
-          console.error(error);
+        .catch(err => {
+          console.error(err);
           alertBox.className = 'alert-box error';
-          alertBox.textContent = 'Gagal terhubung ke Web App. Periksa kembali URL atau pastikan akses Deployment sudah "Anyone".';
+          alertBox.textContent = 'Gagal terhubung. Pastikan URL benar & Deployment berstatus "Anyone".';
           alertBox.style.display = 'block';
           document.getElementById('unlockBtn').textContent = 'Buka Akses';
         });
     }
 
+    // Fungsi untuk mendeteksi kolom 'Belum Bayar' saat nama dipilih
+    function cekBelumBayar() {
+      const namaDipilih = document.getElementById('nama').value.trim().toLowerCase();
+      const infoBox = document.getElementById('infoBelumBayar');
+      const teksBelumBayar = document.getElementById('teksBelumBayar');
+
+      // Cari baris warga di globalDataTransaksi
+      // Sesuaikan indeks kolom "Belum Bayar" di spreadsheet Anda (misal indeks ke-3 atau sesuaikan)
+      let foundRow = globalDataTransaksi.find(row => String(row[2]).trim().toLowerCase() === namaDipilih);
+      
+      if (foundRow) {
+        // Asumsi kolom 'Belum Bayar' berada di indeks tertentu (misal Kolom D atau indeks ke-3)
+        // Sesuaikan angka index di bawah dengan letak kolom rumus "Belum Bayar" di spreadsheet Anda
+        let bulanBelum = foundRow[3] || "Lunas / Tidak ada data"; 
+        teksBelumBayar.textContent = bulanBelum;
+        infoBox.style.display = 'block';
+      } else {
+        infoBox.style.display = 'none';
+      }
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      data.forEach((row, index) => {
+        let tr = document.createElement('tr');
+        row.forEach(cell => {
+          let td = document.createElement(index === 0 ? 'th' : 'td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
     document.getElementById('inputForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
       const btn = document.getElementById('submitBtn');
       const alertBox = document.getElementById('alertBox');
       
-      const selectedBulan = [];
-      document.querySelectorAll('input[name="bulan"]:checked').forEach(cb => {
-        selectedBulan.push(cb.value);
-      });
-
-      if (selectedBulan.length === 0) {
-        alert('Pilih minimal satu bulan pembayaran!');
-        return;
-      }
-      
       btn.textContent = 'Menyimpan...';
       btn.disabled = true;
-      alertBox.style.display = 'none';
 
       const payload = {
-        blok: document.getElementById('blok').value,
+        tanggal: document.getElementById('tanggal').value,
         nama: document.getElementById('nama').value,
-        bulan: selectedBulan
+        bulan: document.getElementById('bulan').value,
+        nominal: document.getElementById('nominal').value,
+        diterimaOleh: document.getElementById('diterimaOleh').value
       };
 
       fetch(ACTIVE_WEB_APP_URL, {
         method: 'POST',
         body: JSON.stringify(payload)
       })
-      .then(response => response.json())
+      .then(res => res.json())
       .then(result => {
         alertBox.className = 'alert-box ' + (result.status === 'success' ? 'success' : 'error');
         alertBox.textContent = result.message;
         alertBox.style.display = 'block';
         if(result.status === 'success') {
           document.getElementById('inputForm').reset();
+          document.getElementById('tanggal').valueAsDate = new Date();
+          document.getElementById('infoBelumBayar').style.display = 'none';
         }
-        btn.textContent = 'Simpan & Perbarui Checklist';
+        btn.textContent = 'Simpan Transaksi Baru';
         btn.disabled = false;
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch(err => {
+        console.error(err);
         alertBox.className = 'alert-box error';
-        alertBox.textContent = 'Terjadi kesalahan koneksi ke server.';
+        alertBox.textContent = 'Kesalahan koneksi server.';
         alertBox.style.display = 'block';
-        btn.textContent = 'Simpan & Perbarui Checklist';
+        btn.textContent = 'Simpan Transaksi Baru';
         btn.disabled = false;
       });
     });
