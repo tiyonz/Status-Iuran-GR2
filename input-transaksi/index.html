@@ -69,11 +69,14 @@
   .alert-box.success{background:var(--success-bg);color:var(--success);border:1px solid rgba(47,107,79,0.3);}
   .alert-box.error{background:#F4E5DD;color:var(--danger);border:1px solid rgba(166,71,43,0.3);}
 
-  /* Tabel Cross Check */
+  /* Filter & Tabel Sesi Input */
+  .filter-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
   .table-container{overflow-x:auto;margin-top:12px;}
   table{width:100%;border-collapse:collapse;font-size:12px;}
   th, td{padding:8px 10px;border:1px solid var(--line);text-align:left;}
   th{background:var(--forest);color:var(--ivory);}
+  
+  .summary-footer{margin-top:12px;font-size:13px;font-weight:600;text-align:right;color:var(--forest-deep);}
   
   #formContent { display:none; }
 </style>
@@ -84,7 +87,7 @@
     <div class="card-container">
       <div class="card-header">
         <h1>Gaharu Residence II</h1>
-        <p>Form Pengurus — Catat Transaksi &amp; Riwayat Warga</p>
+        <p>Form Pengurus — Catat Transaksi Iuran Warga</p>
       </div>
       <div class="card-body">
         <div id="alertBox" class="alert-box"></div>
@@ -111,14 +114,13 @@
             <datalist id="listWarga"></datalist>
           </div>
 
-          <!-- Info Kolom Belum Bayar otomatis dari rumus sheet -->
           <div id="infoBelumBayar" class="info-box">
             <strong>Bulan Belum Bayar:</strong> <span id="teksBelumBayar">-</span>
           </div>
 
           <div class="form-group">
-            <label for="bulan">Bulan yang Dibayar (Tuliskan, misal: Januari atau Januari, Februari)</label>
-            <input type="text" id="bulan" required placeholder="Contoh: Januari 2026">
+            <label for="bulan">Bulan yang Dibayar</label>
+            <input type="text" id="bulan" required placeholder="Contoh: Januari / Januari, Februari">
           </div>
 
           <div class="form-group">
@@ -140,17 +142,44 @@
       </div>
     </div>
 
-    <!-- Kotak Cross-Check Riwayat Transaksi -->
-    <div class="card-container" id="crossCheckCard" style="display:none;">
+    <!-- Kotak Filter & Rekap Transaksi Sesi Ini -->
+    <div class="card-container" id="rekapCard" style="display:none;">
       <div class="card-header" style="background:var(--forest);">
-        <h1>Cross-Check Data Sheet Transaksi</h1>
-        <p>Data mentah terbaru dari spreadsheet untuk pengecekan</p>
+        <h1>Rekap Transaksi Sesi Ini</h1>
+        <p>Filter data transaksi yang baru di-input untuk pengecekan totalan</p>
       </div>
       <div class="card-body">
+        <div class="filter-row">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="filterTanggal">Filter Berdasarkan Tanggal</label>
+            <input type="date" id="filterTanggal" onchange="filterDataSession()">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="filterPetugas">Filter Diterima Oleh</label>
+            <select id="filterPetugas" onchange="filterDataSession()">
+              <option value="">-- Semua Petugas --</option>
+            </select>
+          </div>
+        </div>
+
         <div class="table-container">
-          <table id="tableCrossCheck">
-            <tbody id="tableBody"></tbody>
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Nama Warga</th>
+                <th>Bulan</th>
+                <th>Nominal</th>
+                <th>Diterima Oleh</th>
+              </tr>
+            </thead>
+            <tbody id="sessionTableBody">
+              <tr><td colspan="5" style="text-align:center; color:var(--ink-muted);">Belum ada transaksi yang di-input pada sesi ini.</td></tr>
+            </tbody>
           </table>
+        </div>
+        <div class="summary-footer">
+          Total Terkumpul (Sesuai Filter): <span id="totalNominal">Rp 0</span>
         </div>
       </div>
     </div>
@@ -159,8 +188,8 @@
   <script>
     let ACTIVE_WEB_APP_URL = "";
     let globalDataTransaksi = [];
+    let sesiTransaksiBaru = []; // Menyimpan data yang diinput selama sesi browser aktif
 
-    // Set tanggal hari ini secara otomatis
     document.getElementById('tanggal').valueAsDate = new Date();
 
     function verifikasiAkses() {
@@ -182,11 +211,11 @@
           ACTIVE_WEB_APP_URL = urlInput;
           globalDataTransaksi = res.transaksi;
           
-          // 1. Isi Datalist Nama Warga (Asumsi Kolom Nama di indeks 2 / Kolom C)
+          // 1. Isi Datalist Nama Warga
           const datalist = document.getElementById('listWarga');
           datalist.innerHTML = '';
-          for (let i = 1; i < res.transaksi.length; i++) {
-            let nama = res.transaksi[i][2]; 
+          for (let i = 1; i < res.warga.length; i++) {
+            let nama = res.warga[i][2]; // Sesuaikan kolom nama di Master Warga
             if (nama) {
               let opt = document.createElement('option');
               opt.value = nama;
@@ -194,26 +223,25 @@
             }
           }
 
-          // 2. Isi Dropdown Diterima Oleh dari Sheet Petugas
+          // 2. Isi Dropdown Petugas (Form & Filter)
           const selectPetugas = document.getElementById('diterimaOleh');
+          const filterPetugas = document.getElementById('filterPetugas');
           selectPetugas.innerHTML = '<option value="">-- Pilih Petugas --</option>';
-          for (let i = 1; i < res.petugas.length; i++) {
-            let petugas = res.petugas[i][0];
-            if(petugas) {
-              let opt = document.createElement('option');
-              opt.value = petugas;
-              opt.textContent = petugas;
-              selectPetugas.appendChild(opt);
-            }
-          }
+          filterPetugas.innerHTML = '<option value="">-- Semua Petugas --</option>';
+          
+          res.petugas.forEach(petugasNama => {
+            let opt1 = document.createElement('option');
+            opt1.value = petugasNama; opt1.textContent = petugasNama;
+            selectPetugas.appendChild(opt1);
 
-          // 3. Render Tabel Cross-Check
-          renderTable(res.transaksi);
+            let opt2 = document.createElement('option');
+            opt2.value = petugasNama; opt2.textContent = petugasNama;
+            filterPetugas.appendChild(opt2);
+          });
 
-          // Tampilkan Form & Tabel Cross Check
           document.getElementById('authBox').style.display = 'none';
           document.getElementById('inputForm').style.display = 'block';
-          document.getElementById('crossCheckCard').style.display = 'block';
+          document.getElementById('rekapCard').style.display = 'block';
           alertBox.style.display = 'none';
         })
         .catch(err => {
@@ -225,39 +253,19 @@
         });
     }
 
-    // Fungsi untuk mendeteksi kolom 'Belum Bayar' saat nama dipilih
     function cekBelumBayar() {
       const namaDipilih = document.getElementById('nama').value.trim().toLowerCase();
       const infoBox = document.getElementById('infoBelumBayar');
       const teksBelumBayar = document.getElementById('teksBelumBayar');
 
-      // Cari baris warga di globalDataTransaksi
-      // Sesuaikan indeks kolom "Belum Bayar" di spreadsheet Anda (misal indeks ke-3 atau sesuaikan)
       let foundRow = globalDataTransaksi.find(row => String(row[2]).trim().toLowerCase() === namaDipilih);
-      
       if (foundRow) {
-        // Asumsi kolom 'Belum Bayar' berada di indeks tertentu (misal Kolom D atau indeks ke-3)
-        // Sesuaikan angka index di bawah dengan letak kolom rumus "Belum Bayar" di spreadsheet Anda
         let bulanBelum = foundRow[3] || "Lunas / Tidak ada data"; 
         teksBelumBayar.textContent = bulanBelum;
         infoBox.style.display = 'block';
       } else {
         infoBox.style.display = 'none';
       }
-    }
-
-    function renderTable(data) {
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
-      data.forEach((row, index) => {
-        let tr = document.createElement('tr');
-        row.forEach(cell => {
-          let td = document.createElement(index === 0 ? 'th' : 'td');
-          td.textContent = cell;
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
     }
 
     document.getElementById('inputForm').addEventListener('submit', function(e) {
@@ -285,7 +293,18 @@
         alertBox.className = 'alert-box ' + (result.status === 'success' ? 'success' : 'error');
         alertBox.textContent = result.message;
         alertBox.style.display = 'block';
+        
         if(result.status === 'success') {
+          // Masukkan ke array sesi lokal agar langsung tampil di tabel rekap sesi
+          sesiTransaksiBaru.push({
+            tanggal: payload.tanggal,
+            nama: payload.nama,
+            bulan: payload.bulan,
+            nominal: Number(payload.nominal),
+            diterimaOleh: payload.diterimaOleh
+          });
+          
+          filterDataSession(); // Perbarui tampilan tabel rekap & total
           document.getElementById('inputForm').reset();
           document.getElementById('tanggal').valueAsDate = new Date();
           document.getElementById('infoBelumBayar').style.display = 'none';
@@ -302,6 +321,42 @@
         btn.disabled = false;
       });
     });
+
+    function filterDataSession() {
+      const fTgl = document.getElementById('filterTanggal').value;
+      const fPetugas = document.getElementById('filterPetugas').value;
+      
+      const filtered = sesiTransaksiBaru.filter(item => {
+        let matchTgl = fTgl ? item.tanggal === fTgl : true;
+        let matchPetugas = fPetugas ? item.diterimaOleh === fPetugas : true;
+        return matchTgl && matchPetugas;
+      });
+
+      const tbody = document.getElementById('sessionTableBody');
+      tbody.innerHTML = '';
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--ink-muted);">Tidak ada data transaksi yang cocok dengan filter.</td></tr>`;
+        document.getElementById('totalNominal').textContent = 'Rp 0';
+        return;
+      }
+
+      let totalSum = 0;
+      filtered.forEach(item => {
+        totalSum += item.nominal;
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.tanggal}</td>
+          <td>${item.nama}</td>
+          <td>${item.bulan}</td>
+          <td>Rp ${item.nominal.toLocaleString('id-ID')}</td>
+          <td>${item.diterimaOleh}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('totalNominal').textContent = 'Rp ' + totalSum.toLocaleString('id-ID');
+    }
   </script>
 </body>
 </html>
