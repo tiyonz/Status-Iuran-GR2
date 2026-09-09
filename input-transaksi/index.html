@@ -77,8 +77,6 @@
   th{background:var(--forest);color:var(--ivory);}
   
   .summary-footer{margin-top:12px;font-size:13px;font-weight:600;text-align:right;color:var(--forest-deep);}
-  
-  #formContent { display:none; }
 </style>
 </head>
 <body>
@@ -188,7 +186,7 @@
   <script>
     let ACTIVE_WEB_APP_URL = "";
     let globalDataTransaksi = [];
-    let sesiTransaksiBaru = []; // Menyimpan data yang diinput selama sesi browser aktif
+    let sesiTransaksiBaru = []; 
 
     document.getElementById('tanggal').valueAsDate = new Date();
 
@@ -211,19 +209,16 @@
           ACTIVE_WEB_APP_URL = urlInput;
           globalDataTransaksi = res.transaksi;
           
-          // 1. Isi Datalist Nama Warga
+          // 1. Isi Datalist Nama Warga dari Kolom H (res.warga)
           const datalist = document.getElementById('listWarga');
           datalist.innerHTML = '';
-          for (let i = 1; i < res.warga.length; i++) {
-            let nama = res.warga[i][2]; // Sesuaikan kolom nama di Master Warga
-            if (nama) {
-              let opt = document.createElement('option');
-              opt.value = nama;
-              datalist.appendChild(opt);
-            }
-          }
+          res.warga.forEach(nama => {
+            let opt = document.createElement('option');
+            opt.value = nama;
+            datalist.appendChild(opt);
+          });
 
-          // 2. Isi Dropdown Petugas (Form & Filter)
+          // 2. Isi Dropdown Petugas / Diterima Oleh dari Kolom B Sheet Pengurus (res.petugas)
           const selectPetugas = document.getElementById('diterimaOleh');
           const filterPetugas = document.getElementById('filterPetugas');
           selectPetugas.innerHTML = '<option value="">-- Pilih Petugas --</option>';
@@ -295,7 +290,6 @@
         alertBox.style.display = 'block';
         
         if(result.status === 'success') {
-          // Masukkan ke array sesi lokal agar langsung tampil di tabel rekap sesi
           sesiTransaksiBaru.push({
             tanggal: payload.tanggal,
             nama: payload.nama,
@@ -304,7 +298,7 @@
             diterimaOleh: payload.diterimaOleh
           });
           
-          filterDataSession(); // Perbarui tampilan tabel rekap & total
+          filterDataSession(); 
           document.getElementById('inputForm').reset();
           document.getElementById('tanggal').valueAsDate = new Date();
           document.getElementById('infoBelumBayar').style.display = 'none';
