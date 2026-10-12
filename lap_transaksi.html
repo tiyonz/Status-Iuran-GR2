@@ -99,7 +99,48 @@
     cursor: pointer;
   }
   button.ghost { background: transparent; color: var(--primary); }
-  button:disabled { opacity: .55; cursor: not-allowed; }
+  button { transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform .05s; }
+  button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--primary) 82%, #000);
+    border-color: color-mix(in srgb, var(--primary) 82%, #000);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
+  }
+  button.ghost:hover:not(:disabled) {
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: none;
+  }
+  button:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
+  button.loading { position: relative; cursor: progress; }
+  button:disabled { opacity: .6; cursor: not-allowed; }
+  input[type="text"]:hover, input[type="url"]:hover, input[type="date"]:hover { border-color: var(--primary); }
+
+  .combo { position: relative; }
+  .combo input { padding-right: 40px; }
+  .combo .clear {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    min-height: 36px; width: 36px; padding: 0;
+    background: transparent; color: var(--muted); border: 0; border-radius: 6px;
+    font-size: 1.3rem; line-height: 1;
+  }
+  .combo .clear:hover:not(:disabled) { background: var(--primary-soft); color: var(--ink); box-shadow: none; }
+  .combo .clear:active:not(:disabled) { transform: translateY(-50%) scale(.94); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 20px; transform: translate(-50%, 12px);
+    max-width: calc(100% - 32px);
+    padding: 10px 16px; border-radius: 8px;
+    background: var(--ink); color: var(--bg);
+    font-size: .92rem; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 10;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) {
+    button, .toast { transition: none; }
+  }
   .check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: .9rem; color: var(--muted); }
   .check input { width: 18px; height: 18px; }
 
@@ -195,10 +236,14 @@
         </div>
         <div class="field">
           <label for="petugas">Diterima oleh</label>
-          <input type="text" id="petugas" list="petugasList" placeholder="Semua penerima" autocomplete="off">
+          <div class="combo">
+            <input type="text" id="petugas" list="petugasList" placeholder="Semua penerima" autocomplete="off">
+            <button type="button" class="clear" id="btnClearPetugas" aria-label="Hapus pilihan penerima" title="Hapus pilihan" hidden>&times;</button>
+          </div>
           <datalist id="petugasList"></datalist>
         </div>
         <button type="button" id="btnShow">Tampilkan</button>
+        <button type="button" class="ghost" id="btnReset">Reset</button>
       </div>
     </section>
 
@@ -241,6 +286,8 @@
   </div>
 </div>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 (function () {
   'use strict';
@@ -248,6 +295,8 @@
   var STORAGE_KEY = 'gaharu_lap_api_url';
   var allData = [];      // semua baris dari sheet TRANSAKSI
   var petugasList = [];  // daftar penerima dari sheet TRANSAKSI
+  var activePetugas = '';  // filter penerima yang sedang dipakai ('' = semua)
+  var toastTimer = null;
 
   var $ = function (id) { return document.getElementById(id); };
   var BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -276,6 +325,13 @@
     if (!iso) return '';
     var p = iso.split('-');
     return Number(p[2]) + ' ' + BULAN[Number(p[1]) - 1] + ' ' + p[0];
+  }
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2200);
   }
   function showError(msg) {
     var b = $('errBox');
@@ -313,7 +369,7 @@
       });
   }
 
-  function connect(base, remember) {
+  function connect(base, remember, srcBtn) {
     showError('');
     base = (base || '').trim();
     if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(base) &&
@@ -321,8 +377,10 @@
       showError('URL tidak valid. Gunakan URL Web App yang berakhiran /exec.');
       return;
     }
-    var btn = $('btnConnect');
-    btn.disabled = true; btn.textContent = 'Menghubungkan…';
+    var btn = srcBtn || $('btnConnect');
+    var label = btn.textContent;
+    btn.disabled = true; btn.classList.add('loading');
+    btn.textContent = srcBtn ? 'Memuat…' : 'Menghubungkan…';
 
     fetchData(base).then(function (json) {
       allData = (json.transaksi || []).map(function (t) {
@@ -356,13 +414,16 @@
 
       if (!$('dateFrom').value && !$('dateTo').value) setDefaultDates();
       render();
+      if (srcBtn) toast('Data dimuat ulang — ' + allData.length + ' transaksi');
     }).catch(function (err) {
-      $('app').hidden = true;
-      $('connectPanel').hidden = false;
+      if (!srcBtn) {
+        $('app').hidden = true;
+        $('connectPanel').hidden = false;
+      }
       showError('Tidak bisa mengambil data: ' + err.message +
         ' Cek URL Web App dan pastikan akses deployment diatur ke "Anyone".');
     }).then(function () {
-      btn.disabled = false; btn.textContent = 'Hubungkan';
+      btn.disabled = false; btn.classList.remove('loading'); btn.textContent = label;
     });
   }
 
@@ -378,7 +439,7 @@
   function render() {
     var from = $('dateFrom').value;
     var to = $('dateTo').value;
-    var who = $('petugas').value.trim().toLowerCase();
+    var who = activePetugas.toLowerCase();
 
     if (from && to && from > to) {
       showError('Tanggal "Dari" tidak boleh lebih besar dari "Sampai".');
@@ -454,7 +515,7 @@
     // Ringkasan
     $('totalValue').textContent = rupiah(total);
     var periode = (from ? fmtTanggalPendek(from) : 'awal') + ' – ' + (to ? fmtTanggalPendek(to) : 'sekarang');
-    $('totalMeta').textContent = periode + (who ? ' · ' + $('petugas').value.trim() : '');
+    $('totalMeta').textContent = periode + (who ? ' · ' + activePetugas : '');
     $('countInfo').textContent = rows.length + ' transaksi';
 
     var rb = $('rekapBody');
@@ -480,13 +541,58 @@
   $('apiUrl').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') connect($('apiUrl').value, $('remember').checked);
   });
-  $('btnShow').addEventListener('click', render);
+  function syncClear() { $('btnClearPetugas').hidden = !activePetugas; }
+
+  function applyPetugas(val) {
+    activePetugas = (val || '').trim();
+    $('petugas').value = activePetugas;
+    syncClear();
+    render();
+  }
+
+  $('btnShow').addEventListener('click', function () {
+    var typed = $('petugas').value.trim();
+    if (typed) activePetugas = typed;
+    syncClear();
+    render();
+    var n = $('countInfo').textContent;
+    if (!$('errBox').hidden) return;
+    toast('Ditampilkan: ' + n);
+  });
+
   ['dateFrom', 'dateTo'].forEach(function (id) { $(id).addEventListener('change', render); });
-  $('petugas').addEventListener('change', render);
-  $('petugas').addEventListener('keydown', function (e) { if (e.key === 'Enter') render(); });
+
+  // Kolom penerima: saat diklik, dikosongkan agar semua pilihan muncul lagi.
+  $('petugas').addEventListener('focus', function () {
+    this.value = '';
+  });
+  $('petugas').addEventListener('blur', function () {
+    var typed = this.value.trim();
+    if (typed) { applyPetugas(typed); }
+    else { this.value = activePetugas; }   // tidak memilih apa-apa: kembalikan yang lama
+  });
+  $('petugas').addEventListener('input', function () {
+    var v = this.value.trim().toLowerCase();
+    var hit = petugasList.filter(function (p) { return p.toLowerCase() === v; })[0];
+    if (hit) { applyPetugas(hit); this.blur(); }   // dipilih dari dropdown
+  });
+  $('petugas').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); this.blur(); }
+  });
+
+  $('btnClearPetugas').addEventListener('click', function () {
+    applyPetugas('');
+    toast('Penerima: semua');
+  });
+
+  $('btnReset').addEventListener('click', function () {
+    setDefaultDates();
+    applyPetugas('');
+    toast('Filter dikembalikan ke awal');
+  });
 
   $('btnReload').addEventListener('click', function () {
-    if (window.__apiBase) connect(window.__apiBase, !!loadSavedUrl());
+    if (window.__apiBase) connect(window.__apiBase, !!loadSavedUrl(), $('btnReload'));
   });
   $('btnDisconnect').addEventListener('click', function () {
     clearUrl();
@@ -495,6 +601,9 @@
     $('apiUrl').value = '';
     $('app').hidden = true;
     $('connectPanel').hidden = false;
+    showError('');
+    $('apiUrl').focus();
+    toast('URL dihapus dari browser ini');
   });
 
   // Sambung otomatis kalau URL sudah tersimpan di browser ini
