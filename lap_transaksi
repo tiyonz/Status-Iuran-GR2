@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lap Transaksi — Gaharu Residence II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f5f4;
+    --surface: #ffffff;
+    --ink: #15231f;
+    --muted: #5a6b66;
+    --line: #d6dedb;
+    --primary: #1d5a4c;
+    --primary-ink: #ffffff;
+    --primary-soft: #e3efeb;
+    --warn-bg: #fdf0d5;
+    --warn-ink: #8a4b08;
+    --ok-bg: #dcefe3;
+    --ok-ink: #17623a;
+    --err-bg: #fbe4e1;
+    --err-ink: #9b2c20;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101816;
+      --surface: #17211e;
+      --ink: #e6efec;
+      --muted: #93a6a0;
+      --line: #2a3a36;
+      --primary: #4fb79e;
+      --primary-ink: #0b1613;
+      --primary-soft: #1d2f2a;
+      --warn-bg: #3a2c12;
+      --warn-ink: #f0c070;
+      --ok-bg: #173424;
+      --ok-ink: #7fd6a2;
+      --err-bg: #3b1d19;
+      --err-ink: #f1a79d;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 56px; }
+
+  header.top { margin-bottom: 20px; }
+  header.top h1 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+  header.top p { margin: 2px 0 0; color: var(--muted); font-size: .95rem; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .panel h2 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; }
+  .panel .hint { margin: 0 0 12px; color: var(--muted); font-size: .9rem; }
+
+  label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 4px; }
+  input[type="text"], input[type="url"], input[type="date"] {
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 12px;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--primary) 55%, transparent);
+    outline-offset: 1px;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .row > .field { flex: 1 1 200px; min-width: 0; }
+
+  button {
+    min-height: 44px;
+    padding: 9px 18px;
+    font: inherit;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--primary-ink);
+    cursor: pointer;
+  }
+  button.ghost { background: transparent; color: var(--primary); }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  .check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: .9rem; color: var(--muted); }
+  .check input { width: 18px; height: 18px; }
+
+  .status { margin: 0 0 16px; padding: 10px 14px; border-radius: 8px; font-size: .92rem; }
+  .status.err { background: var(--err-bg); color: var(--err-ink); }
+  .status.info { background: var(--primary-soft); color: var(--primary); }
+
+  .conn { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .conn span { color: var(--muted); font-size: .9rem; }
+  .conn .actions { display: flex; gap: 8px; }
+  .conn button { min-height: 36px; padding: 5px 12px; font-size: .88rem; }
+
+  /* Ringkasan */
+  .summary { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 720px) { .summary { grid-template-columns: 1fr 1.2fr; } }
+  .total-label { margin: 0; color: var(--muted); font-size: .9rem; }
+  .total-value { margin: 2px 0 0; font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .total-meta { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .85rem; font-weight: 600; color: var(--muted); background: color-mix(in srgb, var(--primary-soft) 55%, var(--surface)); white-space: nowrap; }
+  td.num, th.num { text-align: right; }
+  tfoot td { font-weight: 700; border-bottom: 0; background: color-mix(in srgb, var(--primary-soft) 55%, var(--surface)); }
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  .scroll table { min-width: 560px; }
+  .scroll tbody tr:last-child td { border-bottom: 0; }
+  .rekap table { font-size: .95rem; }
+  .rekap { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .rekap tr:last-child td { border-bottom: 0; }
+
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .82rem; font-weight: 600; background: var(--primary-soft); color: var(--muted); }
+  .badge.belum { background: var(--warn-bg); color: var(--warn-ink); }
+  .badge.sudah { background: var(--ok-bg); color: var(--ok-ink); }
+
+  .empty { padding: 28px 16px; text-align: center; color: var(--muted); }
+  .empty strong { display: block; color: var(--ink); margin-bottom: 2px; }
+  .list-head { display: flex; justify-content: space-between; align-items: baseline; margin: 20px 0 8px; }
+  .list-head h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+  .list-head span { color: var(--muted); font-size: .9rem; }
+
+  [hidden] { display: none !important; }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Lap Transaksi</h1>
+    <p>Gaharu Residence II — laporan penerimaan iuran warga</p>
+  </header>
+
+  <!-- Koneksi -->
+  <section class="panel no-print" id="connectPanel">
+    <h2>Hubungkan ke data iuran</h2>
+    <p class="hint">Tempel URL Web App Google Apps Script. URL hanya dipakai di browser ini dan tidak ada di kode halaman.</p>
+    <div class="row">
+      <div class="field">
+        <label for="apiUrl">URL Web App</label>
+        <input type="url" id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" inputmode="url">
+      </div>
+      <button type="button" id="btnConnect">Hubungkan</button>
+    </div>
+    <label class="check"><input type="checkbox" id="remember" checked> Ingat URL di browser ini</label>
+  </section>
+
+  <div class="status err" id="errBox" role="alert" hidden></div>
+
+  <!-- Aplikasi -->
+  <div id="app" hidden>
+    <section class="panel no-print">
+      <div class="conn">
+        <span id="connInfo">Terhubung.</span>
+        <div class="actions">
+          <button type="button" class="ghost" id="btnReload">Muat ulang data</button>
+          <button type="button" class="ghost" id="btnDisconnect">Ganti URL</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel no-print">
+      <div class="row">
+        <div class="field">
+          <label for="dateFrom">Dari tanggal</label>
+          <input type="date" id="dateFrom">
+        </div>
+        <div class="field">
+          <label for="dateTo">Sampai tanggal</label>
+          <input type="date" id="dateTo">
+        </div>
+        <div class="field">
+          <label for="petugas">Diterima oleh</label>
+          <input type="text" id="petugas" list="petugasList" placeholder="Semua penerima" autocomplete="off">
+          <datalist id="petugasList"></datalist>
+        </div>
+        <button type="button" id="btnShow">Tampilkan</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="summary">
+        <div>
+          <p class="total-label">Total diterima</p>
+          <p class="total-value" id="totalValue">Rp 0</p>
+          <p class="total-meta" id="totalMeta"></p>
+        </div>
+        <div class="rekap">
+          <table>
+            <thead><tr><th>Rekap pemasukan</th><th class="num">Diterima</th></tr></thead>
+            <tbody id="rekapBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="list-head">
+      <h2>Rincian transaksi</h2>
+      <span id="countInfo"></span>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="num" style="width:48px">No</th>
+            <th>No Rumah + Penghuni</th>
+            <th class="num">Jumlah Bulan</th>
+            <th class="num">Nominal Diterima</th>
+            <th>Diterima Oleh</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+        <tfoot id="tfoot"></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'gaharu_lap_api_url';
+  var allData = [];      // semua baris dari sheet TRANSAKSI
+  var petugasList = [];  // daftar penerima dari sheet TRANSAKSI
+
+  var $ = function (id) { return document.getElementById(id); };
+  var BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+  /* ---------- util ---------- */
+  function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+  function angka(n)  { return Number(n || 0).toLocaleString('id-ID'); }
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function isoLocal(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+
+  // Backend mengirim 'yyyy-MM-dd'; jaga-jaga kalau formatnya lain.
+  function normTanggal(s) {
+    s = String(s || '').trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    var d = new Date(s);
+    return isNaN(d) ? '' : isoLocal(d);
+  }
+  function el(tag, text, cls) {
+    var e = document.createElement(tag);
+    if (text !== undefined && text !== null) e.textContent = text;
+    if (cls) e.className = cls;
+    return e;
+  }
+  function fmtTanggalPendek(iso) {
+    if (!iso) return '';
+    var p = iso.split('-');
+    return Number(p[2]) + ' ' + BULAN[Number(p[1]) - 1] + ' ' + p[0];
+  }
+  function showError(msg) {
+    var b = $('errBox');
+    b.textContent = msg || '';
+    b.hidden = !msg;
+  }
+  function loadSavedUrl() {
+    try { return localStorage.getItem(STORAGE_KEY) || ''; } catch (e) { return ''; }
+  }
+  function saveUrl(u) {
+    try { localStorage.setItem(STORAGE_KEY, u); } catch (e) {}
+  }
+  function clearUrl() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  }
+
+  /* ---------- koneksi ---------- */
+  function buildUrl(base) {
+    var u = new URL(base);
+    u.searchParams.set('action', 'getTransaksi');
+    return u.toString();
+  }
+
+  function fetchData(base) {
+    return fetch(buildUrl(base), { method: 'GET', redirect: 'follow' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Server membalas dengan status ' + res.status + '.');
+        return res.json();
+      })
+      .then(function (json) {
+        if (!json || json.status !== 'success') {
+          throw new Error((json && json.message) || 'Respons tidak dikenali.');
+        }
+        return json;
+      });
+  }
+
+  function connect(base, remember) {
+    showError('');
+    base = (base || '').trim();
+    if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(base) &&
+        !/^https:\/\/script\.googleusercontent\.com\//.test(base)) {
+      showError('URL tidak valid. Gunakan URL Web App yang berakhiran /exec.');
+      return;
+    }
+    var btn = $('btnConnect');
+    btn.disabled = true; btn.textContent = 'Menghubungkan…';
+
+    fetchData(base).then(function (json) {
+      allData = (json.transaksi || []).map(function (t) {
+        return {
+          rowId: t.rowId,
+          tanggal: normTanggal(t.tanggal),
+          namaGabungan: String(t.namaGabungan || ''),
+          jumlahBulan: Number(t.jumlahBulan) || 0,
+          nominalDiterima: Number(t.nominalDiterima) || 0,
+          diterimaOleh: String(t.diterimaOleh || '').trim(),
+          keterangan: String(t.keterangan || '')
+        };
+      });
+      petugasList = (json.petugas || []).slice();
+
+      // Datalist "Diterima oleh" sesuai isi sheet TRANSAKSI
+      var dl = $('petugasList');
+      dl.textContent = '';
+      petugasList.forEach(function (p) {
+        var o = document.createElement('option');
+        o.value = p;
+        dl.appendChild(o);
+      });
+
+      if (remember) saveUrl(base); else clearUrl();
+      window.__apiBase = base;
+
+      $('connectPanel').hidden = true;
+      $('app').hidden = false;
+      $('connInfo').textContent = 'Terhubung — ' + allData.length + ' transaksi dimuat.';
+
+      if (!$('dateFrom').value && !$('dateTo').value) setDefaultDates();
+      render();
+    }).catch(function (err) {
+      $('app').hidden = true;
+      $('connectPanel').hidden = false;
+      showError('Tidak bisa mengambil data: ' + err.message +
+        ' Cek URL Web App dan pastikan akses deployment diatur ke "Anyone".');
+    }).then(function () {
+      btn.disabled = false; btn.textContent = 'Hubungkan';
+    });
+  }
+
+  function setDefaultDates() {
+    var today = new Date();
+    var from = new Date();
+    from.setDate(today.getDate() - 6);
+    $('dateFrom').value = isoLocal(from);
+    $('dateTo').value = isoLocal(today);
+  }
+
+  /* ---------- tampilan ---------- */
+  function render() {
+    var from = $('dateFrom').value;
+    var to = $('dateTo').value;
+    var who = $('petugas').value.trim().toLowerCase();
+
+    if (from && to && from > to) {
+      showError('Tanggal "Dari" tidak boleh lebih besar dari "Sampai".');
+      return;
+    }
+    showError('');
+
+    var rows = allData.filter(function (r) {
+      if (!r.tanggal) return false;
+      if (from && r.tanggal < from) return false;
+      if (to && r.tanggal > to) return false;
+      if (who && r.diterimaOleh.toLowerCase() !== who) return false;
+      return true;
+    });
+
+    // urut: tanggal lama ke baru, lalu sesuai urutan baris sheet
+    rows.sort(function (a, b) {
+      return a.tanggal < b.tanggal ? -1 : a.tanggal > b.tanggal ? 1 : a.rowId - b.rowId;
+    });
+
+    var tbody = $('tbody');
+    var tfoot = $('tfoot');
+    tbody.textContent = '';
+    tfoot.textContent = '';
+
+    var total = 0, totalBulan = 0, perPetugas = {}, order = [];
+
+    if (rows.length === 0) {
+      var tr = el('tr'), td = el('td');
+      td.colSpan = 6;
+      td.className = 'empty';
+      var s = el('strong', 'Data tidak ditemukan');
+      td.appendChild(s);
+      td.appendChild(document.createTextNode('Periksa kembali rentang tanggal dan nama penerima.'));
+      tr.appendChild(td); tbody.appendChild(tr);
+    }
+
+    rows.forEach(function (r, i) {
+      total += r.nominalDiterima;
+      totalBulan += r.jumlahBulan;
+      var key = r.diterimaOleh || '(tanpa nama)';
+      if (!(key in perPetugas)) { perPetugas[key] = 0; order.push(key); }
+      perPetugas[key] += r.nominalDiterima;
+
+      var tr = el('tr');
+      tr.appendChild(el('td', i + 1, 'num'));
+      tr.appendChild(el('td', r.namaGabungan));
+      tr.appendChild(el('td', angka(r.jumlahBulan), 'num'));
+      tr.appendChild(el('td', angka(r.nominalDiterima), 'num'));
+      tr.appendChild(el('td', r.diterimaOleh));
+
+      var tdK = el('td');
+      var k = r.keterangan.trim();
+      var cls = 'badge';
+      if (/belum/i.test(k)) cls += ' belum';
+      else if (/sudah/i.test(k)) cls += ' sudah';
+      if (k) tdK.appendChild(el('span', k, cls));
+      tr.appendChild(tdK);
+      tbody.appendChild(tr);
+    });
+
+    if (rows.length) {
+      var f = el('tr');
+      f.appendChild(el('td', ''));
+      f.appendChild(el('td', 'Total'));
+      f.appendChild(el('td', angka(totalBulan), 'num'));
+      f.appendChild(el('td', angka(total), 'num'));
+      f.appendChild(el('td', ''));
+      f.appendChild(el('td', ''));
+      tfoot.appendChild(f);
+    }
+
+    // Ringkasan
+    $('totalValue').textContent = rupiah(total);
+    var periode = (from ? fmtTanggalPendek(from) : 'awal') + ' – ' + (to ? fmtTanggalPendek(to) : 'sekarang');
+    $('totalMeta').textContent = periode + (who ? ' · ' + $('petugas').value.trim() : '');
+    $('countInfo').textContent = rows.length + ' transaksi';
+
+    var rb = $('rekapBody');
+    rb.textContent = '';
+    if (!order.length) {
+      var er = el('tr'), ec = el('td', 'Belum ada pemasukan di periode ini');
+      ec.colSpan = 2; ec.style.color = 'var(--muted)';
+      er.appendChild(ec); rb.appendChild(er);
+    }
+    order.sort();
+    order.forEach(function (nm) {
+      var tr = el('tr');
+      tr.appendChild(el('td', nm));
+      tr.appendChild(el('td', angka(perPetugas[nm]), 'num'));
+      rb.appendChild(tr);
+    });
+  }
+
+  /* ---------- event ---------- */
+  $('btnConnect').addEventListener('click', function () {
+    connect($('apiUrl').value, $('remember').checked);
+  });
+  $('apiUrl').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') connect($('apiUrl').value, $('remember').checked);
+  });
+  $('btnShow').addEventListener('click', render);
+  ['dateFrom', 'dateTo'].forEach(function (id) { $(id).addEventListener('change', render); });
+  $('petugas').addEventListener('change', render);
+  $('petugas').addEventListener('keydown', function (e) { if (e.key === 'Enter') render(); });
+
+  $('btnReload').addEventListener('click', function () {
+    if (window.__apiBase) connect(window.__apiBase, !!loadSavedUrl());
+  });
+  $('btnDisconnect').addEventListener('click', function () {
+    clearUrl();
+    window.__apiBase = '';
+    allData = [];
+    $('apiUrl').value = '';
+    $('app').hidden = true;
+    $('connectPanel').hidden = false;
+  });
+
+  // Sambung otomatis kalau URL sudah tersimpan di browser ini
+  var saved = loadSavedUrl();
+  if (saved) {
+    $('apiUrl').value = saved;
+    connect(saved, true);
+  }
+})();
+</script>
+</body>
+</html>
