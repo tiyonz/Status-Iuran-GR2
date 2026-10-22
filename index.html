@@ -719,22 +719,44 @@ const urlCSV_Kas = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOzRPv3GhCX
             <div class="kas-stat"><div class="label">Total pengeluaran</div><div class="val" style="color:var(--danger)">${formatRupiah(totalPengeluaran)}</div></div>
             <div class="kas-stat"><div class="label">Saldo kas akhir</div><div class="val" style="color:var(--forest-deep)">${formatRupiah(saldoAkhir)}</div></div>
           </div>
-          <div class="kas-table-wrap">
+          
+          <!-- Tombol Lihat Detail Selengkapnya -->
+          <div style="text-align: center; margin-top: 15px;">
+            <button id="btnToggleDetail" onclick="toggleDetailKas()" style="padding: 10px 20px; background-color: var(--forest-deep, #2c5e3b); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+              Lihat Detail Selengkapnya
+            </button>
+          </div>
+
+          <!-- Tabel Detail yang awalnya disembunyikan (display: none) -->
+          <div id="kasTableDetail" class="kas-table-wrap" style="display: none; margin-top: 15px;">
             ${htmlKasTable}
           </div>
-        `;
-      }
-    })
-    .catch(err => {
-      console.error("Gagal memuat kas:", err);
+                `;
+              }
+            })
+            .catch(err => {
+              console.error("Gagal memuat kas:", err);
+            });
+        }
+        
+       // Fungsi pendukung toggle detail tabel
+        function toggleDetailKas() {
+          let detailDiv = document.getElementById('kasTableDetail');
+          let btn = document.getElementById('btnToggleDetail');
+          
+          if (detailDiv.style.display === 'none') {
+            detailDiv.style.display = 'block';
+            btn.innerText = 'Sembunyikan Detail';
+          } else {
+            detailDiv.style.display = 'none';
+            btn.innerText = 'Lihat Detail Selengkapnya';
+          }
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+          muatDataKas();
+          // ... (fungsi lain jika ada)
     });
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  muatDataKas();
-  // ... (fungsi lain jika ada)
-});
-  
 </script>
 </body>
 </html>
