@@ -195,12 +195,18 @@
     <h1>Laporan Transaksi</h1>
     <p>Gaharu Residence II — laporan penerimaan iuran warga</p>
     <p>Mangga di cek sareng rekapan nyalira nu teu acan di setorna</p>
+    <label class="no-print" style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;color:var(--muted);font-size:.9rem;">
+      Periode data
+      <select id="year-select" style="min-height:38px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;">
+        <option value="2026">2026</option><option value="2027">2027</option>
+      </select>
+    </label>
   </header>
 
   <!-- Koneksi -->
   <section class="panel no-print" id="connectPanel">
     <h2>Hubungkan ke data iuran</h2>
-    <p class="hint">Tempel URL Web App Google Apps Script. URL hanya dipakai di browser ini dan tidak ada di kode halaman.</p>
+    <p class="hint">Periode 2027 akan terhubung otomatis. Untuk periode 2026, gunakan URL Web App 2026 yang tersimpan di browser atau masukkan kembali jika diminta.</p>
     <div class="row">
       <div class="field">
         <label for="apiUrl">URL Web App</label>
@@ -293,7 +299,13 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'gaharu_lap_api_url';
+  var params = new URLSearchParams(window.location.search);
+  var savedYear = '';
+  try { savedYear = localStorage.getItem('gaharu_tahun_data') || ''; } catch (e) {}
+  var TAHUN_AKTIF = (params.get('tahun') === '2027' || params.get('tahun') === '2026') ? params.get('tahun') : (savedYear === '2027' ? '2027' : '2026');
+  var STORAGE_KEY = TAHUN_AKTIF === '2027' ? 'gaharu_lap_api_url_2027' : 'gaharu_lap_api_url';
+  var API_URL_2027 = 'https://script.google.com/macros/s/AKfycbyoIFlV6xvI1-hYIP4QQFZCCzDS_ZEt-tUqrWwHeEY_KqJ6p7xoMV4iQm2cWQghoWBQ/exec';
+  try { localStorage.setItem('gaharu_tahun_data', TAHUN_AKTIF); } catch (e) {}
   var allData = [];      // semua baris dari sheet TRANSAKSI
   var petugasList = [];  // daftar penerima dari sheet TRANSAKSI
   var activePetugas = '';  // filter penerima yang sedang dipakai ('' = semua)
@@ -301,6 +313,12 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+  $('year-select').value = TAHUN_AKTIF;
+  $('year-select').addEventListener('change', function () {
+    try { localStorage.setItem('gaharu_tahun_data', this.value); } catch (e) {}
+    window.location.href = window.location.pathname + '?tahun=' + this.value;
+  });
 
   /* ---------- util ---------- */
   function rupiah(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
@@ -340,6 +358,7 @@
     b.hidden = !msg;
   }
   function loadSavedUrl() {
+    if (TAHUN_AKTIF === '2027') return API_URL_2027;
     try { return localStorage.getItem(STORAGE_KEY) || ''; } catch (e) { return ''; }
   }
   function saveUrl(u) {
@@ -596,10 +615,10 @@
     if (window.__apiBase) connect(window.__apiBase, !!loadSavedUrl(), $('btnReload'));
   });
   $('btnDisconnect').addEventListener('click', function () {
-    clearUrl();
+    if (TAHUN_AKTIF === '2026') clearUrl();
     window.__apiBase = '';
     allData = [];
-    $('apiUrl').value = '';
+    $('apiUrl').value = TAHUN_AKTIF === '2027' ? API_URL_2027 : '';
     $('app').hidden = true;
     $('connectPanel').hidden = false;
     showError('');
@@ -607,7 +626,7 @@
     toast('URL dihapus dari browser ini');
   });
 
-  // Sambung otomatis kalau URL sudah tersimpan di browser ini
+  // Tahun 2027 memakai endpoint yang sudah ditentukan; 2026 memakai URL lama yang tersimpan di browser.
   var saved = loadSavedUrl();
   if (saved) {
     $('apiUrl').value = saved;

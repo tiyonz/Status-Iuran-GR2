@@ -272,7 +272,7 @@
       </button>
     </div>
 
-    <span class="periode-tag">Periode 2026</span>
+    <span class="periode-tag" id="periode-tag">Periode 2026</span>
 
     <hr class="sb-divider">
 
@@ -293,7 +293,7 @@
    <!-- <div class="row"><a href="login.html" style="color:var(--brass-light); text-decoration:none; font-weight:600; padding:4px 0;">Kelola Transaksi →</a></div>
   </aside> -->
 
-  <div class="row"><a href="lap_transaksi.html" target="_blank" style="color:var(--brass-light); text-decoration:none; font-weight:600; padding:4px 0;"
+  <div class="row"><a id="rekap-link" href="lap_transaksi.html?tahun=2026" target="_blank" style="color:var(--brass-light); text-decoration:none; font-weight:600; padding:4px 0;"
                      >Rekap Penerimaan (Khusus Pengurus) →</a></div>
   </aside>
 
@@ -303,6 +303,12 @@
     <div class="content-head">
       <h2>Status pembayaran per rumah</h2>
       <span>Diperbarui manual secara berkala oleh pengurus.</span>
+      <label style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--ink-muted);">
+        Periode data
+        <select id="year-select" class="status-select" aria-label="Pilih tahun data">
+          <option value="2026">2026</option><option value="2027">2027</option>
+        </select>
+      </label>
     </div>
 
     <!-- Ringkasan uang -->
@@ -451,13 +457,33 @@
 </div>
 
 <script>
-  // MASUKKAN LINK CSV GOOGLE SHEETS DATA IURAN DI SINI:
-  const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv';
-
-  // Untuk nanti: link CSV data kas warga (belum dipakai, masih placeholder)
-  
-
-  const NOMINAL_IURAN = 40000;
+  // Sumber data per tahun
+  const DATA_TAHUN = {
+    '2026': {
+      iuran: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uhgGLUDduChqVX82yMVn_pn8c88w-pD05DAt7GjZwo3iDelLk9u-7y-BOGVjNYv_5OaErP_lLTrS/pub?gid=381427425&single=true&output=csv',
+      kas: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOzRPv3GhCXueJy28CY_G43apWTdtzJTsKQlPBpMJJMO6uGUGwlozKhzFr9XIlRzSA7qngAxDwXaE2/pub?gid=403398669&single=true&output=csv',
+      nominal: 40000
+    },
+    '2027': {
+      iuran: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1ty-Ii4w2ghoQJcTma_hcsE6Qj1b40c1iDZTwQ7t2XgpalmmWnJWDh2bAfgNtVVkFwlor2sii19rL/pub?gid=381427425&single=true&output=csv',
+      kas: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTw949mkhZxDWHicUiVVU0I_AqObk-RpwEGvNIXJkguVApSzDIw2qgCq5TSPV_0O0YL6_72VhCnlDT9/pub?gid=403398669&single=true&output=csv',
+      nominal: 40000
+    }
+  };
+  const params = new URLSearchParams(window.location.search);
+  const savedYear = localStorage.getItem('gaharu_tahun_data');
+  const TAHUN_AKTIF = DATA_TAHUN[params.get('tahun')] ? params.get('tahun') : (DATA_TAHUN[savedYear] ? savedYear : '2026');
+  const urlCSV = DATA_TAHUN[TAHUN_AKTIF].iuran;
+  const NOMINAL_IURAN = DATA_TAHUN[TAHUN_AKTIF].nominal;
+  const urlCSV_Kas = DATA_TAHUN[TAHUN_AKTIF].kas;
+  localStorage.setItem('gaharu_tahun_data', TAHUN_AKTIF);
+  document.getElementById('periode-tag').textContent = 'Periode ' + TAHUN_AKTIF;
+  document.getElementById('year-select').value = TAHUN_AKTIF;
+  document.getElementById('rekap-link').href = 'lap_transaksi.html?tahun=' + TAHUN_AKTIF;
+  document.getElementById('year-select').addEventListener('change', function () {
+    localStorage.setItem('gaharu_tahun_data', this.value);
+    window.location.href = window.location.pathname + '?tahun=' + this.value;
+  });
 
   let barisData = [];
   let blokAktif = 'SEMUA';
@@ -655,9 +681,6 @@
     document.getElementById('sidebar-overlay').classList.toggle('open');
     document.body.style.overflow = document.getElementById('sidebar').classList.contains('open') ? 'hidden' : '';
   }
-
-// Ganti dengan link CSV Google Sheets Kas Anda yang baru:
-const urlCSV_Kas = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTOzRPv3GhCXueJy28CY_G43apWTdtzJTsKQlPBpMJJMO6uGUGwlozKhzFr9XIlRzSA7qngAxDwXaE2/pub?gid=403398669&single=true&output=csv';
 
  function muatDataKas() {
   if (!urlCSV_Kas || urlCSV_Kas.includes('URL_CSV_KAS')) return;
